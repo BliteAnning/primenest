@@ -179,7 +179,7 @@ export default function Onboarding() {
 
         localStorage.setItem("user", JSON.stringify(updatedUser));
         toast.success("Profile saved successfully.");
-        window.location.href = "/listings";
+        window.location.href = role === "agent" ? "/my-dashboard-a" : "/listings";
       } else {
         throw new Error("Unable to save profile");
       }

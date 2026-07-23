@@ -1,11 +1,68 @@
-import { useContext, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Bath, BedDouble, BookmarkPlus, MapPin, RefreshCw, Search, SlidersHorizontal, Sparkles } from "lucide-react";
+import {
+  ArrowRight,
+  Bath,
+  BedDouble,
+  BookmarkPlus,
+  BrainCircuit,
+  Calculator,
+  CircleAlert,
+  LoaderCircle,
+  Lock,
+  MapPin,
+  RefreshCw,
+  Search,
+  SlidersHorizontal,
+  Sparkles,
+  WandSparkles,
+} from "lucide-react";
 import { listingContext } from "../context/listingContext";
 import axiosInstance from "../axiosInstance";
 
 const formatCurrency = (value) =>
   new Intl.NumberFormat("en-GH", { style: "currency", currency: "GHS", maximumFractionDigits: 0 }).format(value);
+
+const getStoredUser = () => {
+  try {
+    return JSON.parse(localStorage.getItem("primenestUser") || localStorage.getItem("user") || "null");
+  } catch {
+    return null;
+  }
+};
+
+const splitCommaValues = (value) =>
+  value
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+const getAdvanceAmount = (advancePayment, months, fallbackMonthlyMax) => {
+  if (!advancePayment) {
+    return fallbackMonthlyMax ? fallbackMonthlyMax * months : null;
+  }
+
+  if (months === 6) {
+    return advancePayment.sixMonths ?? (fallbackMonthlyMax ? fallbackMonthlyMax * 6 : null);
+  }
+
+  if (months === 12) {
+    return advancePayment.twelveMonths ?? advancePayment.annual ?? (fallbackMonthlyMax ? fallbackMonthlyMax * 12 : null);
+  }
+
+  if (months === 24) {
+    return advancePayment.twentyFourMonths ?? advancePayment.two_years_advance ?? (fallbackMonthlyMax ? fallbackMonthlyMax * 24 : null);
+  }
+
+  return advancePayment.userCapacity ?? (fallbackMonthlyMax ? fallbackMonthlyMax * months : null);
+};
+
+const affordabilityTone = {
+  Comfortable: "border-emerald-200 bg-emerald-50 text-emerald-700",
+  Moderate: "border-amber-200 bg-amber-50 text-amber-700",
+  Stretched: "border-orange-200 bg-orange-50 text-orange-700",
+  "At Risk": "border-rose-200 bg-rose-50 text-rose-700",
+};
 
 const initialFilters = {
   q: "",
@@ -21,17 +78,100 @@ const initialFilters = {
 
 export default function Listings() {
   const { listings, loading, error, getListings } = useContext(listingContext);
+  const storedUser = useMemo(() => getStoredUser(), []);
+  const isTenantLoggedIn = Boolean(localStorage.getItem("token")) && storedUser?.role === "tenant";
   const [filters, setFilters] = useState(initialFilters);
   const [geoCoords, setGeoCoords] = useState(null);
   const [geoMessage, setGeoMessage] = useState("");
   const [searchName, setSearchName] = useState("");
   const [searchMessage, setSearchMessage] = useState("");
+  const [quickForm, setQuickForm] = useState({
+    income: storedUser?.tenantProfile?.monthlyIncome ? String(storedUser.tenantProfile.monthlyIncome) : "5000",
+    advanceMonths: storedUser?.tenantProfile?.advancePaymentCapacity ? String(storedUser.tenantProfile.advancePaymentCapacity) : "12",
+  });
+  const [quickResult, setQuickResult] = useState(null);
+  const [quickLoading, setQuickLoading] = useState(false);
+  const [quickError, setQuickError] = useState("");
+  const [analysisForm, setAnalysisForm] = useState({
+    monthlyIncome: storedUser?.tenantProfile?.monthlyIncome ? String(storedUser.tenantProfile.monthlyIncome) : "",
+    totalBudget: "",
+    preferredLocations: storedUser?.tenantProfile?.preferredLocations?.join(", ") || "",
+    listingType: "rent",
+    bedrooms: storedUser?.tenantProfile?.bedroomsNeeded ? String(storedUser.tenantProfile.bedroomsNeeded) : "",
+    propertyTypes: storedUser?.tenantProfile?.propertyTypePreference?.join(", ") || "",
+    advanceMonths: storedUser?.tenantProfile?.advancePaymentCapacity ? String(storedUser.tenantProfile.advancePaymentCapacity) : "12",
+  });
+  const [analysisResult, setAnalysisResult] = useState(null);
+  const [analysisLoading, setAnalysisLoading] = useState(false);
+  const [analysisError, setAnalysisError] = useState("");
 
   const featuredCount = useMemo(() => listings.filter((item) => item.isFeatured).length, [listings]);
+  const preferredLocationCount = useMemo(() => splitCommaValues(analysisForm.preferredLocations).length, [analysisForm.preferredLocations]);
+
+  useEffect(() => {
+    if (!isTenantLoggedIn) {
+      return undefined;
+    }
+
+    if (!quickForm.income || Number(quickForm.income) <= 0) {
+      setQuickResult(null);
+      setQuickError("");
+      return undefined;
+    }
+
+    let isActive = true;
+    const timer = setTimeout(async () => {
+      setQuickLoading(true);
+      setQuickError("");
+
+      try {
+        const response = await axiosInstance.get("/affordability/calculate", {
+          params: {
+            income: Number(quickForm.income),
+            advanceMonths: Number(quickForm.advanceMonths),
+          },
+        });
+
+        if (isActive) {
+          setQuickResult(response?.data?.data || null);
+        }
+      } catch (quickCalcError) {
+        if (isActive) {
+          console.error(quickCalcError);
+          setQuickError("We could not refresh the budget calculator right now.");
+          setQuickResult(null);
+        }
+      } finally {
+        if (isActive) {
+          setQuickLoading(false);
+        }
+      }
+    }, 350);
+
+    return () => {
+      isActive = false;
+      clearTimeout(timer);
+    };
+  }, [isTenantLoggedIn, quickForm.advanceMonths, quickForm.income]);
+
+  const quickAdvanceMonths = Number(quickForm.advanceMonths);
+  const quickRecommendedMax = quickResult?.recommendedBudget?.max || 0;
+  const selectedAdvanceCost = getAdvanceAmount(quickResult?.advancePayment, quickAdvanceMonths, quickRecommendedMax);
+  const affordabilityBadgeClass = affordabilityTone[analysisResult?.financialSummary?.affordabilityScore?.label] || "border-slate-200 bg-slate-50 text-slate-700";
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFilters((current) => ({ ...current, [name]: value }));
+  };
+
+  const handleQuickChange = (event) => {
+    const { name, value } = event.target;
+    setQuickForm((current) => ({ ...current, [name]: value }));
+  };
+
+  const handleAnalysisChange = (event) => {
+    const { name, value } = event.target;
+    setAnalysisForm((current) => ({ ...current, [name]: value }));
   };
 
   const handleSubmit = async (event) => {
@@ -95,6 +235,55 @@ export default function Listings() {
     }
   };
 
+  const handleUseCurrentSearch = () => {
+    const inferredLocations = [filters.city, filters.region].filter(Boolean).join(", ");
+
+    setAnalysisForm((current) => ({
+      ...current,
+      preferredLocations: inferredLocations || current.preferredLocations,
+      listingType: filters.listingType || current.listingType,
+      bedrooms: filters.bedrooms || current.bedrooms,
+      propertyTypes: filters.propertyType || current.propertyTypes,
+    }));
+  };
+
+  const handleRunAffordability = async (event) => {
+    event.preventDefault();
+    setAnalysisLoading(true);
+    setAnalysisError("");
+
+    const preferredLocations = splitCommaValues(analysisForm.preferredLocations);
+    if (preferredLocations.length === 0) {
+      setAnalysisLoading(false);
+      setAnalysisResult(null);
+      setAnalysisError("Add at least one preferred location to run the advisor.");
+      return;
+    }
+
+    try {
+      const payload = {
+        monthlyIncome: analysisForm.monthlyIncome ? Number(analysisForm.monthlyIncome) : undefined,
+        totalBudget: analysisForm.totalBudget ? Number(analysisForm.totalBudget) : undefined,
+        preferredLocations,
+        listingType: analysisForm.listingType || "rent",
+        bedrooms: analysisForm.bedrooms ? Number(analysisForm.bedrooms) : undefined,
+        propertyTypes: splitCommaValues(analysisForm.propertyTypes),
+        advanceMonths: Number(analysisForm.advanceMonths) || 12,
+      };
+
+      const response = await axiosInstance.post("/affordability/analyse", payload);
+      setAnalysisResult(response?.data?.data || null);
+    } catch (analysisRequestError) {
+      console.error(analysisRequestError);
+      setAnalysisResult(null);
+      setAnalysisError(
+        analysisRequestError?.response?.data?.message || "We could not complete the affordability analysis right now."
+      );
+    } finally {
+      setAnalysisLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[linear-gradient(135deg,#f7fff9_0%,#ffffff_45%,#f0fdf4_100%)] px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
@@ -126,6 +315,389 @@ export default function Listings() {
           <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
             <p className="text-sm text-slate-500">Coverage</p>
             <p className="mt-2 text-2xl font-bold text-slate-900">Accra & Beyond</p>
+          </div>
+        </section>
+
+        <section className="mb-8 overflow-hidden rounded-4xl border border-emerald-100 bg-white shadow-xl">
+          <div className="grid gap-0 lg:grid-cols-[1.05fr_1.35fr]">
+            <div className="bg-[radial-gradient(circle_at_top_left,rgba(16,185,129,0.22),transparent_38%),linear-gradient(160deg,#064e3b_0%,#0f766e_60%,#164e63_100%)] p-6 text-white sm:p-8">
+              <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-sm font-semibold backdrop-blur">
+                <WandSparkles size={16} /> Affordability advisor
+              </div>
+              <h2 className="mt-5 text-3xl font-bold leading-tight sm:text-4xl">See what fits before you fall in love with a listing.</h2>
+              <p className="mt-4 max-w-xl text-sm leading-7 text-emerald-50 sm:text-base">
+                Run a fast budget check instantly, then ask the AI advisor to match your income, preferred locations, and housing goals against live PrimeNest listings.
+              </p>
+
+              <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                <div className="rounded-3xl border border-white/15 bg-white/10 p-4 backdrop-blur">
+                  <p className="text-sm text-emerald-50">Instant guidance</p>
+                  <p className="mt-2 text-xl font-semibold">Quick calculator</p>
+                  <p className="mt-2 text-sm text-emerald-100">Live budget range with advance-payment estimates tuned for Ghana’s rental market.</p>
+                </div>
+                <div className="rounded-3xl border border-white/15 bg-white/10 p-4 backdrop-blur">
+                  <p className="text-sm text-emerald-50">AI recommendation</p>
+                  <p className="mt-2 text-xl font-semibold">Location-aware analysis</p>
+                  <p className="mt-2 text-sm text-emerald-100">Friendly advice plus nearby location alternatives and matching inventory counts.</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-[linear-gradient(180deg,#fcfffd_0%,#f5fbf8_100%)] p-6 sm:p-8">
+              {isTenantLoggedIn ? (
+                <div className="space-y-6">
+                  <div className="grid gap-6 xl:grid-cols-[0.92fr_1.08fr]">
+                    <div className="rounded-[1.75rem] border border-emerald-100 bg-white p-5 shadow-sm">
+                      <div className="flex items-center justify-between gap-3">
+                        <div>
+                          <p className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-700">
+                            <Calculator size={16} /> Quick calculate
+                          </p>
+                          <h3 className="mt-2 text-xl font-semibold text-slate-900">Live monthly budget guide</h3>
+                        </div>
+                        {quickLoading ? <LoaderCircle className="animate-spin text-emerald-600" size={18} /> : null}
+                      </div>
+
+                      <div className="mt-5 space-y-4">
+                        <label className="block text-sm text-slate-600">
+                          <span className="mb-2 block font-medium text-slate-700">Monthly income</span>
+                          <input
+                            type="range"
+                            min="500"
+                            max="40000"
+                            step="100"
+                            name="income"
+                            value={quickForm.income}
+                            onChange={handleQuickChange}
+                            className="w-full accent-emerald-600"
+                          />
+                          <input
+                            type="number"
+                            min="1"
+                            name="income"
+                            value={quickForm.income}
+                            onChange={handleQuickChange}
+                            className="mt-3 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500"
+                          />
+                        </label>
+
+                        <label className="block text-sm text-slate-600">
+                          <span className="mb-2 block font-medium text-slate-700">Advance period</span>
+                          <select
+                            name="advanceMonths"
+                            value={quickForm.advanceMonths}
+                            onChange={handleQuickChange}
+                            className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500"
+                          >
+                            <option value="6">6 months</option>
+                            <option value="12">12 months</option>
+                            <option value="24">24 months</option>
+                          </select>
+                        </label>
+                      </div>
+
+                      {quickError ? <div className="mt-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{quickError}</div> : null}
+
+                      {quickResult ? (
+                        <div className="mt-5 space-y-3">
+                          <div className="rounded-3xl bg-slate-900 p-4 text-white">
+                            <p className="text-sm text-slate-300">Recommended monthly rent</p>
+                            <p className="mt-2 text-3xl font-bold">{formatCurrency(quickResult.recommendedBudget.min)} - {formatCurrency(quickResult.recommendedBudget.max)}</p>
+                            <p className="mt-2 text-sm text-slate-300">Stretch ceiling: {formatCurrency(quickResult.stretchBudget.max)}</p>
+                          </div>
+
+                          <div className="grid gap-3 sm:grid-cols-3 xl:grid-cols-1 2xl:grid-cols-3">
+                            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                              <p className="text-xs uppercase tracking-[0.18em] text-slate-500">6 months</p>
+                              <p className="mt-2 text-lg font-semibold text-slate-900">{formatCurrency(getAdvanceAmount(quickResult.advancePayment, 6, quickRecommendedMax) || 0)}</p>
+                            </div>
+                            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                              <p className="text-xs uppercase tracking-[0.18em] text-slate-500">12 months</p>
+                              <p className="mt-2 text-lg font-semibold text-slate-900">{formatCurrency(getAdvanceAmount(quickResult.advancePayment, 12, quickRecommendedMax) || 0)}</p>
+                            </div>
+                            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                              <p className="text-xs uppercase tracking-[0.18em] text-slate-500">24 months</p>
+                              <p className="mt-2 text-lg font-semibold text-slate-900">{formatCurrency(getAdvanceAmount(quickResult.advancePayment, 24, quickRecommendedMax) || 0)}</p>
+                            </div>
+                          </div>
+
+                          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">
+                            For your selected {quickAdvanceMonths}-month advance, plan for about <span className="font-semibold">{formatCurrency(selectedAdvanceCost || 0)}</span> upfront.
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="mt-5 rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-4 py-5 text-sm text-slate-500">
+                          Move the income slider to preview a realistic rent range.
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="rounded-[1.75rem] border border-emerald-100 bg-white p-5 shadow-sm">
+                      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                        <div>
+                          <p className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-700">
+                            <BrainCircuit size={16} /> AI affordability analysis
+                          </p>
+                          <h3 className="mt-2 text-xl font-semibold text-slate-900">Get a personalised recommendation</h3>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={handleUseCurrentSearch}
+                          className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                        >
+                          Use current filters
+                        </button>
+                      </div>
+
+                      <form onSubmit={handleRunAffordability} className="mt-5 space-y-4">
+                        <div className="grid gap-3 md:grid-cols-2">
+                          <label className="text-sm text-slate-600">
+                            <span className="mb-2 block font-medium text-slate-700">Monthly income</span>
+                            <input
+                              type="number"
+                              min="1"
+                              name="monthlyIncome"
+                              value={analysisForm.monthlyIncome}
+                              onChange={handleAnalysisChange}
+                              placeholder="5000"
+                              className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500"
+                            />
+                          </label>
+                          <label className="text-sm text-slate-600">
+                            <span className="mb-2 block font-medium text-slate-700">Total budget (optional)</span>
+                            <input
+                              type="number"
+                              min="1"
+                              name="totalBudget"
+                              value={analysisForm.totalBudget}
+                              onChange={handleAnalysisChange}
+                              placeholder="60000"
+                              className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500"
+                            />
+                          </label>
+                          <label className="text-sm text-slate-600 md:col-span-2">
+                            <span className="mb-2 block font-medium text-slate-700">Preferred locations</span>
+                            <input
+                              name="preferredLocations"
+                              value={analysisForm.preferredLocations}
+                              onChange={handleAnalysisChange}
+                              placeholder="Adenta, Madina, East Legon"
+                              className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500"
+                            />
+                            <span className="mt-2 block text-xs text-slate-500">Separate up to 5 locations with commas. Current count: {preferredLocationCount}</span>
+                          </label>
+                          <label className="text-sm text-slate-600">
+                            <span className="mb-2 block font-medium text-slate-700">Listing type</span>
+                            <select
+                              name="listingType"
+                              value={analysisForm.listingType}
+                              onChange={handleAnalysisChange}
+                              className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500"
+                            >
+                              <option value="rent">Rent</option>
+                              <option value="sale">Sale</option>
+                              <option value="short_stay">Short stay</option>
+                            </select>
+                          </label>
+                          <label className="text-sm text-slate-600">
+                            <span className="mb-2 block font-medium text-slate-700">Advance months</span>
+                            <select
+                              name="advanceMonths"
+                              value={analysisForm.advanceMonths}
+                              onChange={handleAnalysisChange}
+                              className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500"
+                            >
+                              <option value="6">6 months</option>
+                              <option value="12">12 months</option>
+                              <option value="24">24 months</option>
+                            </select>
+                          </label>
+                          <label className="text-sm text-slate-600">
+                            <span className="mb-2 block font-medium text-slate-700">Bedrooms</span>
+                            <input
+                              type="number"
+                              min="0"
+                              max="20"
+                              name="bedrooms"
+                              value={analysisForm.bedrooms}
+                              onChange={handleAnalysisChange}
+                              placeholder="2"
+                              className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500"
+                            />
+                          </label>
+                          <label className="text-sm text-slate-600">
+                            <span className="mb-2 block font-medium text-slate-700">Property types</span>
+                            <input
+                              name="propertyTypes"
+                              value={analysisForm.propertyTypes}
+                              onChange={handleAnalysisChange}
+                              placeholder="Apartment, house"
+                              className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500"
+                            />
+                          </label>
+                        </div>
+
+                        <button
+                          type="submit"
+                          disabled={analysisLoading}
+                          className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-emerald-600 px-4 py-3 font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-70"
+                        >
+                          {analysisLoading ? <LoaderCircle className="animate-spin" size={18} /> : <BrainCircuit size={18} />}
+                          Run affordability advisor
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+
+                  {analysisError ? (
+                    <div className="rounded-3xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{analysisError}</div>
+                  ) : null}
+
+                  {analysisResult ? (
+                    <div className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
+                      <div className="space-y-4 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm">
+                        <div className="flex flex-wrap items-center justify-between gap-3">
+                          <div>
+                            <p className="text-sm font-semibold text-slate-500">Financial summary</p>
+                            <h3 className="mt-1 text-2xl font-semibold text-slate-900">Your affordability snapshot</h3>
+                          </div>
+                          <div className={`rounded-full border px-4 py-2 text-sm font-semibold ${affordabilityBadgeClass}`}>
+                            {analysisResult.financialSummary.affordabilityScore.emoji} {analysisResult.financialSummary.affordabilityScore.label}
+                          </div>
+                        </div>
+
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          <div className="rounded-2xl bg-slate-900 p-4 text-white">
+                            <p className="text-sm text-slate-300">Recommended budget</p>
+                            <p className="mt-2 text-2xl font-bold">{formatCurrency(analysisResult.financialSummary.recommendedBudget.min)} - {formatCurrency(analysisResult.financialSummary.recommendedBudget.max)}</p>
+                          </div>
+                          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                            <p className="text-sm text-slate-500">Stretch budget</p>
+                            <p className="mt-2 text-2xl font-bold text-slate-900">{formatCurrency(analysisResult.financialSummary.stretchBudget.max)}</p>
+                            <p className="mt-2 text-xs text-slate-500">{analysisResult.financialSummary.stretchBudget.warning}</p>
+                          </div>
+                        </div>
+
+                        <div className="grid gap-3 sm:grid-cols-3">
+                          <div className="rounded-2xl border border-slate-200 p-4">
+                            <p className="text-sm text-slate-500">12-month advance</p>
+                            <p className="mt-2 text-xl font-semibold text-slate-900">{formatCurrency(getAdvanceAmount(analysisResult.financialSummary.advancePayment, 12, analysisResult.financialSummary.recommendedBudget.max) || 0)}</p>
+                          </div>
+                          <div className="rounded-2xl border border-slate-200 p-4">
+                            <p className="text-sm text-slate-500">24-month advance</p>
+                            <p className="mt-2 text-xl font-semibold text-slate-900">{formatCurrency(getAdvanceAmount(analysisResult.financialSummary.advancePayment, 24, analysisResult.financialSummary.recommendedBudget.max) || 0)}</p>
+                          </div>
+                          <div className="rounded-2xl border border-slate-200 p-4">
+                            <p className="text-sm text-slate-500">Selected plan</p>
+                            <p className="mt-2 text-xl font-semibold text-slate-900">{formatCurrency(analysisResult.financialSummary.advancePayment.userCapacity || 0)}</p>
+                            <p className="mt-2 text-xs text-slate-500">{analysisResult.financialSummary.advancePayment.months} months upfront</p>
+                          </div>
+                        </div>
+
+                        <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-sm text-emerald-800">
+                          Housing would take about <span className="font-semibold">{analysisResult.financialSummary.affordabilityScore.ratio}%</span> of your income at the recommended ceiling. {analysisResult.financialSummary.affordabilityScore.description}.
+                        </div>
+                      </div>
+
+                      <div className="space-y-4 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm">
+                        <div>
+                          <p className="text-sm font-semibold text-slate-500">AI recommendation</p>
+                          <h3 className="mt-1 text-2xl font-semibold text-slate-900">Where to focus your search next</h3>
+                        </div>
+
+                        <div className="rounded-3xl border border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] p-5 text-sm leading-7 text-slate-700">
+                          {analysisResult.recommendation}
+                        </div>
+
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                            <p className="text-sm text-slate-500">Matches found</p>
+                            <p className="mt-2 text-3xl font-bold text-slate-900">{analysisResult.matchingSummary.totalListingsFound}</p>
+                          </div>
+                          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                            <p className="text-sm text-slate-500">Alternative areas</p>
+                            <p className="mt-2 text-3xl font-bold text-slate-900">{analysisResult.matchingSummary.alternativeSuggestions.length}</p>
+                          </div>
+                        </div>
+
+                        {analysisResult.matchingSummary.byLocation.length > 0 ? (
+                          <div>
+                            <p className="mb-3 text-sm font-semibold text-slate-700">Top matching locations</p>
+                            <div className="space-y-3">
+                              {analysisResult.matchingSummary.byLocation.map((group) => (
+                                <div key={group.location} className="rounded-2xl border border-slate-200 p-4">
+                                  <div className="flex items-center justify-between gap-3">
+                                    <div>
+                                      <p className="font-semibold text-slate-900">{group.location}</p>
+                                      <p className="text-sm text-slate-500">{group.count} matching properties</p>
+                                    </div>
+                                  </div>
+
+                                  {group.sample?.length ? (
+                                    <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                                      {group.sample.map((sample) => (
+                                        <Link
+                                          key={`${group.location}-${sample._id || sample.title}`}
+                                          to={sample._id ? `/listings/${sample._id}` : "/listings"}
+                                          className="rounded-2xl bg-slate-50 p-3 transition hover:bg-emerald-50"
+                                        >
+                                          <p className="font-medium text-slate-900">{sample.title}</p>
+                                          <p className="mt-1 text-sm text-slate-500">{sample.propertyType || "Property"} • {sample.bedrooms || 0} bed</p>
+                                          <p className="mt-2 text-sm font-semibold text-emerald-700">{formatCurrency(sample.price)}</p>
+                                        </Link>
+                                      ))}
+                                    </div>
+                                  ) : null}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        ) : null}
+
+                        {analysisResult.matchingSummary.noResultsIn.length > 0 ? (
+                          <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+                            No current matches in {analysisResult.matchingSummary.noResultsIn.join(", ")}. Try the suggested alternatives or widen the budget slightly.
+                          </div>
+                        ) : null}
+
+                        {analysisResult.matchingSummary.alternativeSuggestions.length > 0 ? (
+                          <div className="flex flex-wrap gap-2">
+                            {analysisResult.matchingSummary.alternativeSuggestions.map((item) => (
+                              <span key={item.location} className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700">
+                                {item.location} • {item.count} options
+                              </span>
+                            ))}
+                          </div>
+                        ) : null}
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+              ) : (
+                <div className="flex h-full flex-col justify-center rounded-[1.75rem] border border-dashed border-slate-300 bg-white p-6 text-center sm:p-8">
+                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-slate-600">
+                    <Lock size={24} />
+                  </div>
+                  <h3 className="mt-5 text-2xl font-semibold text-slate-900">Tenant-only affordability tools</h3>
+                  <p className="mt-3 text-sm leading-7 text-slate-600">
+                    Sign in with a tenant account to unlock the quick calculator and AI affordability recommendation directly from the listings page.
+                  </p>
+                  <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
+                    <Link to="/login" className="rounded-full bg-emerald-600 px-5 py-3 font-semibold text-white transition hover:bg-emerald-700">
+                      Sign in as tenant
+                    </Link>
+                    <Link to="/register" className="rounded-full border border-slate-200 px-5 py-3 font-semibold text-slate-700 transition hover:bg-slate-50">
+                      Create tenant account
+                    </Link>
+                  </div>
+                  {storedUser?.role && storedUser.role !== "tenant" ? (
+                    <div className="mt-5 inline-flex items-center justify-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-4 py-2 text-sm text-amber-800">
+                      <CircleAlert size={16} /> This signed-in account is not a tenant profile.
+                    </div>
+                  ) : null}
+                </div>
+              )}
+            </div>
           </div>
         </section>
 

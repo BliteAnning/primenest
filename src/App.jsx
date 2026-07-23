@@ -10,6 +10,7 @@ import VerifyEmail from "./page/VerifyEmail"
 import {Toaster} from "react-hot-toast";
 import Navbar from "./component/Navbar"
 import TenantDashboard from "./page/tenantDashboard"
+import AgentDashboard from "./page/agent/agentDashboard"
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/verify-email/:token" element={<VerifyEmail />} />
       <Route path="/my-dashboard-t/" element={<TenantDashboard />} />
+      <Route path="/my-dashboard-a" element={<AgentDashboard />} />
     </Routes>
     </>
     

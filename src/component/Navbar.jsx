@@ -2,6 +2,14 @@ import { Link } from 'react-router-dom';
 
 const Navbar = () => {
     const token = localStorage.getItem('token');
+    const storedUser = (() => {
+        try {
+            return JSON.parse(localStorage.getItem('primenestUser') || 'null');
+        } catch {
+            return null;
+        }
+    })();
+    const dashboardPath = storedUser?.role === 'agent' ? '/my-dashboard-a' : '/my-dashboard-t';
     const handleLogout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('primenestUser');
@@ -21,7 +29,7 @@ const Navbar = () => {
             <a href="#features" className="transition hover:text-emerald-600">Features</a>
             <a href="#how" className="transition hover:text-emerald-600">How it Works</a>
             {token ? (
-              <Link to="/my-dashboard-t" className="transition hover:text-emerald-600">Dashboard</Link>
+              <Link to={dashboardPath} className="transition hover:text-emerald-600">Dashboard</Link>
             ) : (
               <Link to="/login" className="transition hover:text-emerald-600">Login</Link>
             )}

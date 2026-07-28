@@ -34,6 +34,7 @@ export default function Login() {
       
     } catch (err) {
       console.error(err);
+      setError(err.response?.data?.message || 'An error occurred. Please try again.');
       //navigate('/onboarding', { state: { role: 'tenant' } });
     } finally {
       setLoading(false);

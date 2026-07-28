@@ -6,10 +6,12 @@ import {
   BedDouble,
   Building2,
   CalendarDays,
+  CalendarClock,
   CheckCircle2,
   Eye,
   Heart,
   HeartOff,
+  Mail,
   MapPin,
   Ruler,
   ShieldAlert,
@@ -17,6 +19,17 @@ import {
   UserRound,
 } from "lucide-react";
 import { listingContext } from "../context/listingContext";
+import { engagementContext } from "../context/engagementContext";
+import InquiryModal from "../component/InquiryModal";
+import ViewingRequestModal from "../component/ViewingRequestModal";
+
+const getStoredUser = () => {
+  try {
+    return JSON.parse(localStorage.getItem("primenestUser") || localStorage.getItem("user") || "null");
+  } catch {
+    return null;
+  }
+};
 
 const formatCurrency = (value) =>
   new Intl.NumberFormat("en-GH", { style: "currency", currency: "GHS", maximumFractionDigits: 0 }).format(value);
@@ -33,12 +46,16 @@ const formatDate = (value) => {
 export default function ListingDetail() {
   const { id } = useParams();
   const { getListingDetails, fetchSavedListings, toggleSavedListing } = useContext(listingContext);
+  const { sendInquiry, requestViewing } = useContext(engagementContext);
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [saveMessage, setSaveMessage] = useState("");
   const [activeImage, setActiveImage] = useState(0);
+  const [showInquiryModal, setShowInquiryModal] = useState(false);
+  const [showViewingModal, setShowViewingModal] = useState(false);
+  const storedUser = useMemo(() => getStoredUser(), []);
 
   useEffect(() => {
     const loadListing = async () => {
@@ -99,6 +116,13 @@ export default function ListingDetail() {
   const owner = listing?.listedBy || null;
   const amenities = listing?.amenities || {};
   const amenityList = Object.entries(amenities).filter(([, value]) => value === true);
+
+  const canEngage =
+    Boolean(localStorage.getItem("token")) &&
+    storedUser &&
+    (storedUser.role === "tenant" || storedUser.role === "buyer") &&
+    owner?._id &&
+    owner._id !== (storedUser._id || storedUser.id);
 
   if (loading) {
     return (
@@ -307,6 +331,25 @@ export default function ListingDetail() {
                     {owner?.email ? <p>Email: {owner.email}</p> : null}
                     {owner?.agentProfile?.bio ? <p>{owner.agentProfile.bio}</p> : null}
                   </div>
+
+                  {canEngage ? (
+                    <div className="mt-5 flex flex-wrap gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setShowInquiryModal(true)}
+                        className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700"
+                      >
+                        <Mail size={16} /> Send an inquiry
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setShowViewingModal(true)}
+                        className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-100"
+                      >
+                        <CalendarClock size={16} /> Request a viewing
+                      </button>
+                    </div>
+                  ) : null}
                 </section>
 
                 <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -338,6 +381,14 @@ export default function ListingDetail() {
           </div>
         </div>
       </div>
+
+      {showInquiryModal ? (
+        <InquiryModal listing={listing} onSend={sendInquiry} onClose={() => setShowInquiryModal(false)} />
+      ) : null}
+
+      {showViewingModal ? (
+        <ViewingRequestModal listing={listing} onSend={requestViewing} onClose={() => setShowViewingModal(false)} />
+      ) : null}
     </div>
   );
 }

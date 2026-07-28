@@ -4,13 +4,16 @@ import { BrowserRouter } from 'react-router-dom'
 import './index.css'
 import App from './App.jsx'
 import ListingContextProvider from './context/listingContext.jsx'
+import EngagementContextProvider from './context/engagementContext.jsx'
 
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <ListingContextProvider>
-        <App />
+        <EngagementContextProvider>
+          <App />
+        </EngagementContextProvider>
       </ListingContextProvider>
     </BrowserRouter>
   </StrictMode>,

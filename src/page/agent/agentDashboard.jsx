@@ -3,8 +3,10 @@ import { useNavigate } from "react-router-dom";
 import {
   BadgeCheck,
   Building2,
+  CalendarClock,
   CircleAlert,
   ClipboardList,
+  Inbox,
   LayoutGrid,
   ListChecks,
   LoaderCircle,
@@ -20,11 +22,15 @@ import AgentListings from "./AgentListings";
 import AgentListingForm from "./AgentListingForm";
 import AgentRiskAlerts from "./AgentRiskAlerts";
 import AgentProfile from "./AgentProfile";
+import AgentInquiries from "./AgentInquiries";
+import AgentViewings from "./AgentViewings";
 
 const sidebarItems = [
   { id: "overview", label: "Overview", icon: LayoutGrid },
   { id: "listings", label: "My listings", icon: ListChecks },
   { id: "add-listing", label: "Add listing", icon: PlusCircle },
+  { id: "inquiries", label: "Inquiries", icon: Inbox },
+  { id: "viewings", label: "Viewings", icon: CalendarClock },
   { id: "risk-alerts", label: "Risk alerts", icon: ShieldAlert },
   { id: "profile", label: "Profile", icon: UserRound },
 ];
@@ -202,6 +208,8 @@ export default function AgentDashboard() {
               <AgentListingForm user={user} editingListingId={editingListingId} onSaved={handleListingSaved} />
             ) : null}
             {activeTab === "risk-alerts" ? <AgentRiskAlerts /> : null}
+            {activeTab === "inquiries" ? <AgentInquiries /> : null}
+            {activeTab === "viewings" ? <AgentViewings /> : null}
             {activeTab === "profile" ? <AgentProfile user={user} onUserUpdate={handleUserUpdate} /> : null}
           </section>
         </div>

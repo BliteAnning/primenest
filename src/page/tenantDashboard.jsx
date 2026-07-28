@@ -2,8 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   BellRing,
+  CalendarClock,
   Compass,
   Heart,
+  Inbox,
   LayoutGrid,
   LogOut,
   MapPin,
@@ -13,6 +15,9 @@ import {
   UserRound,
 } from "lucide-react";
 import axiosInstance from "../axiosInstance";
+import EmailAlertsToggle from "../component/EmailAlertsToggle";
+import TenantInquiries from "./tenant/TenantInquiries";
+import TenantViewings from "./tenant/TenantViewings";
 
 const formatCurrency = (value) =>
   new Intl.NumberFormat("en-GH", { style: "currency", currency: "GHS", maximumFractionDigits: 0 }).format(value);
@@ -34,6 +39,7 @@ const emptyProfile = {
 const TenantDashboard = () => {
   const navigate = useNavigate();
   const [activeView, setActiveView] = useState("overview");
+  const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(emptyProfile);
   const [savedListings, setSavedListings] = useState([]);
   const [savedSearches, setSavedSearches] = useState([]);
@@ -58,6 +64,8 @@ const TenantDashboard = () => {
 
         const user = profileRes?.data?.data?.user || null;
         if (user) {
+          setUser(user);
+          localStorage.setItem("primenestUser", JSON.stringify(user));
           setProfile({
             firstName: user.firstName || "",
             lastName: user.lastName || "",
@@ -146,9 +154,16 @@ const TenantDashboard = () => {
     }
   };
 
+  const handleUserUpdate = (updatedUser) => {
+    setUser(updatedUser);
+    localStorage.setItem("primenestUser", JSON.stringify(updatedUser));
+  };
+
   const sidebarItems = [
     { id: "overview", label: "Overview", icon: LayoutGrid },
     { id: "profile", label: "Profile", icon: UserRound },
+    { id: "inquiries", label: "Inquiries", icon: Inbox },
+    { id: "viewings", label: "Viewings", icon: CalendarClock },
     { id: "saved-listings", label: "Saved listings", icon: Heart },
     { id: "saved-searches", label: "Saved searches", icon: SearchIcon },
   ];
@@ -276,7 +291,9 @@ const TenantDashboard = () => {
             ) : null}
 
             {activeView === "profile" ? (
-              <section className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+              <section className="space-y-6">
+                <EmailAlertsToggle user={user} onUserUpdate={handleUserUpdate} />
+                <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <h2 className="text-xl font-semibold text-slate-900">Edit your profile</h2>
@@ -330,8 +347,13 @@ const TenantDashboard = () => {
                     </button>
                   </div>
                 </form>
+                </div>
               </section>
             ) : null}
+
+            {activeView === "inquiries" ? <TenantInquiries /> : null}
+
+            {activeView === "viewings" ? <TenantViewings /> : null}
 
             {activeView === "saved-listings" ? (
               <section className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">

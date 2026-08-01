@@ -1,5 +1,6 @@
 import { useContext, useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { toast } from "react-hot-toast";
 import {
   ArrowLeft,
   Bath,
@@ -17,11 +18,13 @@ import {
   ShieldAlert,
   Sparkles,
   UserRound,
+  Wand2,
 } from "lucide-react";
 import { listingContext } from "../context/listingContext";
 import { engagementContext } from "../context/engagementContext";
 import InquiryModal from "../component/InquiryModal";
 import ViewingRequestModal from "../component/ViewingRequestModal";
+import RenovationVisionModal from "../component/RenovationVisionModal";
 
 const getStoredUser = () => {
   try {
@@ -55,6 +58,7 @@ export default function ListingDetail() {
   const [activeImage, setActiveImage] = useState(0);
   const [showInquiryModal, setShowInquiryModal] = useState(false);
   const [showViewingModal, setShowViewingModal] = useState(false);
+  const [showRenoVisionModal, setShowRenoVisionModal] = useState(false);
   const storedUser = useMemo(() => getStoredUser(), []);
 
   useEffect(() => {
@@ -123,6 +127,19 @@ export default function ListingDetail() {
     (storedUser.role === "tenant" || storedUser.role === "buyer") &&
     owner?._id &&
     owner._id !== (storedUser._id || storedUser.id);
+
+  const isTenantOrBuyer =
+    Boolean(localStorage.getItem("token")) && storedUser && (storedUser.role === "tenant" || storedUser.role === "buyer");
+
+  const hasRenovatablePhotos = (listing?.media || []).some((item) => item?.type === "photo" && item?.url);
+
+  const handleOpenRenovationVision = () => {
+    if (!isTenantOrBuyer) {
+      toast.error("Please sign in as a tenant or buyer to use AI Renovation Vision.");
+      return;
+    }
+    setShowRenoVisionModal(true);
+  };
 
   if (loading) {
     return (
@@ -237,6 +254,30 @@ export default function ListingDetail() {
               </div>
             </div>
           </div>
+
+          {hasRenovatablePhotos ? (
+            <div className="border-t border-slate-200 bg-gradient-to-br from-emerald-50 via-white to-teal-50 p-6 sm:p-8 lg:p-10">
+              <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+                <div>
+                  <div className="inline-flex items-center gap-2 rounded-full bg-emerald-600/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-emerald-700">
+                    <Sparkles size={14} /> New · AI powered
+                  </div>
+                  <h3 className="mt-3 text-xl font-bold text-slate-900">See this space redesigned in your style</h3>
+                  <p className="mt-1 max-w-xl text-sm text-slate-600">
+                    Use AI Renovation Vision to preview a modern, luxury, or Afrocentric makeover of any photo — complete
+                    with a Ghana-specific cost estimate.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleOpenRenovationVision}
+                  className="inline-flex shrink-0 items-center gap-2 rounded-full bg-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-600/20 transition hover:bg-emerald-700"
+                >
+                  <Wand2 size={16} /> Try Renovation Vision
+                </button>
+              </div>
+            </div>
+          ) : null}
 
           <div className="border-t border-slate-200 bg-slate-50/70 p-6 sm:p-8 lg:p-10">
             <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
@@ -388,6 +429,10 @@ export default function ListingDetail() {
 
       {showViewingModal ? (
         <ViewingRequestModal listing={listing} onSend={requestViewing} onClose={() => setShowViewingModal(false)} />
+      ) : null}
+
+      {showRenoVisionModal ? (
+        <RenovationVisionModal listing={listing} onClose={() => setShowRenoVisionModal(false)} />
       ) : null}
     </div>
   );

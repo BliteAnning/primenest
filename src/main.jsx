@@ -5,6 +5,7 @@ import './index.css'
 import App from './App.jsx'
 import ListingContextProvider from './context/listingContext.jsx'
 import EngagementContextProvider from './context/engagementContext.jsx'
+import RenoVisionContextProvider from './context/renoVisionContext.jsx'
 
 
 createRoot(document.getElementById('root')).render(
@@ -12,7 +13,9 @@ createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <ListingContextProvider>
         <EngagementContextProvider>
-          <App />
+          <RenoVisionContextProvider>
+            <App />
+          </RenoVisionContextProvider>
         </EngagementContextProvider>
       </ListingContextProvider>
     </BrowserRouter>

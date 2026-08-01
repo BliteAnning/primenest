@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { ImagePlus, LoaderCircle, Save, Upload, X } from "lucide-react";
 import axiosInstance from "../../axiosInstance";
+import LocationPicker from "../../component/LocationPicker";
 
 const propertyTypeOptions = [
   "apartment", "house", "townhouse", "studio", "duplex", "mansion", "commercial", "office", "land", "short_stay",
@@ -49,6 +50,8 @@ const emptyForm = {
   neighborhood: "",
   streetAddress: "",
   nearbyLandmarks: "",
+  latitude: "",
+  longitude: "",
   sizeSqm: "",
   bedrooms: "",
   bathrooms: "",
@@ -105,6 +108,8 @@ export default function AgentListingForm({ user, editingListingId, onSaved }) {
           neighborhood: listing.location?.neighborhood || "",
           streetAddress: listing.location?.streetAddress || "",
           nearbyLandmarks: listing.location?.nearbyLandmarks?.join(", ") || "",
+          latitude: listing.location?.coordinates?.coordinates?.[1] ?? "",
+          longitude: listing.location?.coordinates?.coordinates?.[0] ?? "",
           sizeSqm: listing.sizeSqm ?? "",
           bedrooms: listing.bedrooms ?? "",
           bathrooms: listing.bathrooms ?? "",
@@ -157,6 +162,14 @@ export default function AgentListingForm({ user, editingListingId, onSaved }) {
       neighborhood: form.neighborhood,
       streetAddress: form.streetAddress,
       nearbyLandmarks: form.nearbyLandmarks.split(",").map((item) => item.trim()).filter(Boolean),
+      ...(form.latitude !== "" && form.longitude !== ""
+        ? {
+            coordinates: {
+              type: "Point",
+              coordinates: [Number(form.longitude), Number(form.latitude)],
+            },
+          }
+        : {}),
     },
     sizeSqm: form.sizeSqm ? Number(form.sizeSqm) : undefined,
     bedrooms: form.bedrooms ? Number(form.bedrooms) : undefined,
@@ -176,6 +189,12 @@ export default function AgentListingForm({ user, editingListingId, onSaved }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    if (form.latitude === "" || form.longitude === "") {
+      toast.error("Please pin this property's exact location on the map before submitting — it's required so we can check nearby risk zones.");
+      return;
+    }
+
     setSaving(true);
 
     try {
@@ -198,8 +217,8 @@ export default function AgentListingForm({ user, editingListingId, onSaved }) {
 
       onSaved();
     } catch (err) {
-      console.error(err);
-      toast.error(err?.response?.data?.message || "We could not save this listing.");
+      console.error(err?.response?.data?.message);
+      toast.error("We could not save this listing. An error occurred.");
     } finally {
       setSaving(false);
     }
@@ -333,6 +352,17 @@ export default function AgentListingForm({ user, editingListingId, onSaved }) {
               <span className="mb-2 block font-medium text-slate-700">Nearby landmarks</span>
               <input name="nearbyLandmarks" value={form.nearbyLandmarks} onChange={handleChange} placeholder="East Legon Mall, A&C Square" className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500" />
             </label>
+            <div className="md:col-span-2 xl:col-span-4">
+              <span className="mb-2 block text-sm font-medium text-slate-700">
+                Pin the property on the map <span className="text-rose-600">*</span>
+              </span>
+              <LocationPicker
+                latitude={form.latitude}
+                longitude={form.longitude}
+                addressQuery={[form.streetAddress, form.neighborhood, form.city, form.region].filter(Boolean).join(", ")}
+                onChange={({ latitude, longitude }) => setForm((current) => ({ ...current, latitude, longitude }))}
+              />
+            </div>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-3 xl:grid-cols-6">

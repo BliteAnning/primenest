@@ -11,6 +11,7 @@ import {Toaster} from "react-hot-toast";
 import Navbar from "./component/Navbar"
 import TenantDashboard from "./page/tenantDashboard"
 import AgentDashboard from "./page/agent/agentDashboard"
+import AdminDashboard from "./page/admin/AdminDashboard"
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
       <Route path="/verify-email/:token" element={<VerifyEmail />} />
       <Route path="/my-dashboard-t/" element={<TenantDashboard />} />
       <Route path="/my-dashboard-a" element={<AgentDashboard />} />
+      <Route path="/my-dashboard-admin" element={<AdminDashboard />} />
     </Routes>
     </>
     

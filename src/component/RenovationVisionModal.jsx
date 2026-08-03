@@ -15,12 +15,12 @@ import {
 } from "lucide-react";
 import { renoVisionContext } from "../context/renoVisionContext";
 
-const STEPS = ["photo", "style", "customize"];
+const STEPS = ["photo", "customize", "style"];
 
 const STEP_LABELS = {
   photo: "Choose a photo",
-  style: "Pick a style",
-  customize: "Add your touch",
+  customize: "Describe your vision",
+  style: "Pick a style (optional)",
 };
 
 // Backend only sends key/label/description — these visuals give each style a
@@ -142,9 +142,9 @@ export default function RenovationVisionModal({ listing, onClose }) {
       setStep("photo");
       return;
     }
-    if (!selectedStyle) {
-      toast.error("Please choose a style.");
-      setStep("style");
+    if (!customPrompt.trim()) {
+      toast.error("Please describe how you'd like this room redesigned.");
+      setStep("customize");
       return;
     }
 
@@ -157,8 +157,8 @@ export default function RenovationVisionModal({ listing, onClose }) {
       const response = await generateVision({
         listingId: listing._id,
         mediaId: selectedPhoto._id,
-        style: selectedStyle.key,
-        customPrompt: customPrompt.trim() || undefined,
+        style: selectedStyle?.key,
+        customPrompt: customPrompt.trim(),
         forceRegenerate,
       });
 
@@ -207,13 +207,12 @@ export default function RenovationVisionModal({ listing, onClose }) {
 
   const resetForNewStyle = () => {
     setSelectedStyle(null);
-    setCustomPrompt("");
     setResult(null);
     setErrorMessage("");
     setStep("style");
   };
 
-  const currentStepIndex = STEPS.indexOf(step === "generating" || step === "result" ? "customize" : step);
+  const currentStepIndex = STEPS.indexOf(step === "generating" || step === "result" ? "style" : step);
 
   return (
     <div
@@ -234,8 +233,8 @@ export default function RenovationVisionModal({ listing, onClose }) {
               </div>
               <h2 className="mt-3 text-2xl font-bold sm:text-3xl">Redecorate this space</h2>
               <p className="mt-1 max-w-lg text-sm text-emerald-50/90">
-                Pick a photo, choose a style, and let our AI designer show you the possibilities — with a
-                Ghana-specific cost estimate.
+                Pick a photo, describe how you'd like it redesigned, and optionally choose a style for extra
+                inspiration — our AI designer handles the rest, with a Ghana-specific cost estimate.
               </p>
             </div>
             <button
@@ -319,10 +318,39 @@ export default function RenovationVisionModal({ listing, onClose }) {
             </div>
           )}
 
+          {step === "customize" && (
+            <div>
+              <h3 className="text-lg font-semibold text-slate-900">Describe your vision</h3>
+              <p className="mt-1 text-sm text-slate-500">
+                Required — tell the AI how you'd like this room redesigned. Be as specific as you like.
+              </p>
+
+              <div className="mt-5 flex flex-col gap-4 sm:flex-row">
+                <div className="overflow-hidden rounded-2xl border border-slate-200 sm:w-40 sm:shrink-0">
+                  <img src={selectedPhoto?.url} alt="Selected" className="h-28 w-full object-cover sm:h-full" />
+                </div>
+                <div className="flex-1 space-y-3">
+                  <textarea
+                    value={customPrompt}
+                    onChange={(event) => setCustomPrompt(event.target.value.slice(0, 300))}
+                    rows={5}
+                    maxLength={300}
+                    placeholder="e.g. add a reading nook by the window, warm wood tones, keep the ceiling white..."
+                    className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-emerald-500"
+                  />
+                  <p className="text-right text-xs text-slate-400">{customPrompt.length}/300</p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {step === "style" && (
             <div>
-              <h3 className="text-lg font-semibold text-slate-900">Pick a design style</h3>
-              <p className="mt-1 text-sm text-slate-500">Each style is tuned with its own materials, palette, and cost multiplier.</p>
+              <h3 className="text-lg font-semibold text-slate-900">Pick a style (optional)</h3>
+              <p className="mt-1 text-sm text-slate-500">
+                Adds extra colour and material cues on top of your description above — skip it if you'd rather
+                the AI focus purely on what you wrote.
+              </p>
 
               {stylesLoading ? (
                 <div className="mt-8 flex items-center justify-center gap-2 text-sm text-slate-500">
@@ -353,37 +381,6 @@ export default function RenovationVisionModal({ listing, onClose }) {
                   })}
                 </div>
               )}
-            </div>
-          )}
-
-          {step === "customize" && (
-            <div>
-              <h3 className="text-lg font-semibold text-slate-900">Add your personal touch</h3>
-              <p className="mt-1 text-sm text-slate-500">Optional — tell the AI about any extra details you'd like to see.</p>
-
-              <div className="mt-5 flex flex-col gap-4 sm:flex-row">
-                <div className="overflow-hidden rounded-2xl border border-slate-200 sm:w-40 sm:shrink-0">
-                  <img src={selectedPhoto?.url} alt="Selected" className="h-28 w-full object-cover sm:h-full" />
-                </div>
-                <div className="flex-1 space-y-3">
-                  <div
-                    className={`inline-flex items-center gap-2 rounded-full bg-gradient-to-br px-3 py-1.5 text-sm font-semibold text-slate-800 ${
-                      (STYLE_VISUALS[selectedStyle?.key] || DEFAULT_STYLE_VISUAL).gradient
-                    }`}
-                  >
-                    {(STYLE_VISUALS[selectedStyle?.key] || DEFAULT_STYLE_VISUAL).emoji} {selectedStyle?.label}
-                  </div>
-                  <textarea
-                    value={customPrompt}
-                    onChange={(event) => setCustomPrompt(event.target.value.slice(0, 300))}
-                    rows={4}
-                    maxLength={300}
-                    placeholder="e.g. add a reading nook by the window, keep the ceiling white..."
-                    className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-emerald-500"
-                  />
-                  <p className="text-right text-xs text-slate-400">{customPrompt.length}/300</p>
-                </div>
-              </div>
             </div>
           )}
 
@@ -418,7 +415,10 @@ export default function RenovationVisionModal({ listing, onClose }) {
             <div>
               <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 size={18} /> Here&apos;s your {result.styleLabel || selectedStyle?.label} vision
+                  <CheckCircle2 size={18} />
+                  {result.styleLabel || selectedStyle?.label
+                    ? `Here's your ${result.styleLabel || selectedStyle?.label} vision`
+                    : "Here's your redesigned space"}
                   {result.cached && <span className="font-normal text-emerald-600">(previously generated)</span>}
                 </div>
                 {result.cached && (
@@ -500,26 +500,6 @@ export default function RenovationVisionModal({ listing, onClose }) {
                 <button
                   type="button"
                   disabled={!selectedPhoto}
-                  onClick={() => goToStep("style")}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  Next <ArrowRight size={15} />
-                </button>
-              </>
-            )}
-
-            {step === "style" && (
-              <>
-                <button
-                  type="button"
-                  onClick={() => goToStep("photo")}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
-                >
-                  <ArrowLeft size={15} /> Back
-                </button>
-                <button
-                  type="button"
-                  disabled={!selectedStyle}
                   onClick={() => goToStep("customize")}
                   className="inline-flex items-center gap-1.5 rounded-full bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
                 >
@@ -532,7 +512,27 @@ export default function RenovationVisionModal({ listing, onClose }) {
               <>
                 <button
                   type="button"
+                  onClick={() => goToStep("photo")}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
+                >
+                  <ArrowLeft size={15} /> Back
+                </button>
+                <button
+                  type="button"
+                  disabled={!customPrompt.trim()}
                   onClick={() => goToStep("style")}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  Next <ArrowRight size={15} />
+                </button>
+              </>
+            )}
+
+            {step === "style" && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => goToStep("customize")}
                   className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
                 >
                   <ArrowLeft size={15} /> Back

@@ -23,6 +23,8 @@ export default function Login() {
         setAuthSession(token, user);
         if (user?.onboardingCompleted === false) {
         navigate('/onboarding', { state: { role: user?.role || 'tenant' } });
+      } else if (user?.role === 'admin') {
+        window.location.href = '/my-dashboard-admin';
       } else if (user?.role === 'agent') {
         window.location.href = '/my-dashboard-a';
       } else {

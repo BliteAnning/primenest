@@ -85,6 +85,9 @@ export default function AgentListings({ onEditListing }) {
   const [selectedListing, setSelectedListing] = useState(null);
   const [detailLoading, setDetailLoading] = useState(false);
   const [actionListingId, setActionListingId] = useState(null);
+  const [dealModal, setDealModal] = useState(null); // { listingId, action, label }
+  const [dealForm, setDealForm] = useState({ buyerEmail: "", amount: "", notes: "" });
+  const [dealSubmitting, setDealSubmitting] = useState(false);
 
   useEffect(() => {
     const loadListings = async () => {
@@ -140,22 +143,52 @@ export default function AgentListings({ onEditListing }) {
     }
   };
 
-  const handleStatusChange = async (id, action) => {
+  const handleStatusChange = async (id, action, extra = {}) => {
     setActionListingId(id);
     try {
-      const response = await axiosInstance.patch(`/listings/${id}/status`, { action });
+      const response = await axiosInstance.patch(`/listings/${id}/status`, { action, ...extra });
       const updated = response?.data?.data?.listing;
       setListings((current) => current.map((item) => (item._id === id ? { ...item, status: updated?.status || item.status } : item)));
       if (selectedListing?._id === id) {
         setSelectedListing((current) => (current ? { ...current, status: updated?.status || current.status } : current));
       }
       toast.success("Listing status updated.");
+      return true;
     } catch (err) {
       console.error(err);
       toast.error(err?.response?.data?.message || "We could not update this listing's status.");
+      return false;
     } finally {
       setActionListingId(null);
     }
+  };
+
+  const handleActionClick = (id, action, label) => {
+    if (action === "mark_let" || action === "mark_sold") {
+      setDealForm({ buyerEmail: "", amount: "", notes: "" });
+      setDealModal({ listingId: id, action, label });
+      return;
+    }
+    handleStatusChange(id, action);
+  };
+
+  const closeDealModal = () => {
+    if (dealSubmitting) return;
+    setDealModal(null);
+  };
+
+  const submitDeal = async (event) => {
+    event.preventDefault();
+    if (!dealModal) return;
+    setDealSubmitting(true);
+    const extra = {
+      buyerEmail: dealForm.buyerEmail.trim() || undefined,
+      amount: dealForm.amount ? Number(dealForm.amount) : undefined,
+      notes: dealForm.notes.trim() || undefined,
+    };
+    const ok = await handleStatusChange(dealModal.listingId, dealModal.action, extra);
+    setDealSubmitting(false);
+    if (ok) setDealModal(null);
   };
 
   if (selectedId) {
@@ -293,7 +326,7 @@ export default function AgentListings({ onEditListing }) {
                     key={action}
                     type="button"
                     disabled={actionListingId === selectedListing._id}
-                    onClick={() => handleStatusChange(selectedListing._id, action)}
+                    onClick={() => handleActionClick(selectedListing._id, action, label)}
                     className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-60"
                   >
                     {label}
@@ -303,6 +336,67 @@ export default function AgentListings({ onEditListing }) {
             ) : null}
           </div>
         )}
+
+        {dealModal ? (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
+            <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-xl">
+              <h3 className="text-lg font-semibold text-slate-900">{dealModal.label}</h3>
+              <p className="mt-1 text-sm text-slate-500">
+                Optionally record the tenant/buyer's account email so this deal shows up in their history and in the
+                admin dashboard's sales &amp; rentals overview.
+              </p>
+              <form onSubmit={submitDeal} className="mt-4 space-y-3">
+                <div>
+                  <label className="text-xs font-semibold uppercase text-slate-500">Tenant/buyer email (optional)</label>
+                  <input
+                    type="email"
+                    value={dealForm.buyerEmail}
+                    onChange={(event) => setDealForm((current) => ({ ...current, buyerEmail: event.target.value }))}
+                    placeholder="tenant@example.com"
+                    className="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-2 text-sm outline-none focus:border-emerald-500"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold uppercase text-slate-500">Deal amount (GHS, optional)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={dealForm.amount}
+                    onChange={(event) => setDealForm((current) => ({ ...current, amount: event.target.value }))}
+                    placeholder={formatCurrency(selectedListing?.price)}
+                    className="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-2 text-sm outline-none focus:border-emerald-500"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold uppercase text-slate-500">Notes (optional)</label>
+                  <textarea
+                    value={dealForm.notes}
+                    onChange={(event) => setDealForm((current) => ({ ...current, notes: event.target.value }))}
+                    rows={2}
+                    className="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-2 text-sm outline-none focus:border-emerald-500"
+                  />
+                </div>
+                <div className="flex justify-end gap-2 pt-2">
+                  <button
+                    type="button"
+                    onClick={closeDealModal}
+                    disabled={dealSubmitting}
+                    className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 disabled:opacity-60"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={dealSubmitting}
+                    className="rounded-full bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-60"
+                  >
+                    {dealSubmitting ? "Saving..." : "Confirm"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        ) : null}
       </div>
     );
   }

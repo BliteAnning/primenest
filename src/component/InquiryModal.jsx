@@ -38,7 +38,7 @@ export default function InquiryModal({ listing, onSend, onClose }) {
       >
         <div className="flex items-start justify-between gap-3">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1 text-sm font-semibold text-emerald-700">
+            <div className="inline-flex items-center gap-2 rounded-full bg-lime-100 px-3 py-1 text-sm font-semibold text-lime-700">
               <Mail size={15} /> Send an inquiry
             </div>
             <h3 className="mt-3 text-lg font-semibold text-slate-900">{listing?.title}</h3>
@@ -60,7 +60,7 @@ export default function InquiryModal({ listing, onSend, onClose }) {
               onChange={(event) => setMessage(event.target.value)}
               rows={4}
               maxLength={2000}
-              className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-emerald-500"
+              className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-lime-500"
             />
           </label>
           <label className="block text-sm text-slate-600">
@@ -70,7 +70,7 @@ export default function InquiryModal({ listing, onSend, onClose }) {
               value={phone}
               onChange={(event) => setPhone(event.target.value)}
               placeholder="So the agent can call you back"
-              className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-emerald-500"
+              className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-lime-500"
             />
           </label>
 
@@ -78,7 +78,7 @@ export default function InquiryModal({ listing, onSend, onClose }) {
             <button
               type="submit"
               disabled={submitting}
-              className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-60"
+              className="inline-flex items-center gap-2 rounded-full bg-lime-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-lime-700 disabled:opacity-60"
             >
               {submitting ? <Loader2 size={16} className="animate-spin" /> : <Mail size={16} />}
               Send inquiry

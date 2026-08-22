@@ -171,16 +171,16 @@ const TenantDashboard = () => {
   return (
     <div className="min-h-screen bg-[linear-gradient(135deg,#f7fff9_0%,#ffffff_45%,#f0fdf4_100%)] px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-6 flex flex-col gap-3 rounded-[2rem] border border-emerald-100 bg-white/80 p-5 shadow-lg backdrop-blur sm:flex-row sm:items-center sm:justify-between">
+        <div className="mb-6 flex flex-col gap-3 rounded-[2rem] border border-lime-100 bg-white/80 p-5 shadow-lg backdrop-blur sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1 text-sm font-semibold text-emerald-700">
-              <Sparkles size={16} /> Tenant dashboard
+            <p className="inline-flex items-center gap-2 rounded-full bg-lime-100 px-3 py-1 text-sm font-semibold text-lime-700">
+               Tenant dashboard
             </p>
             <h1 className="mt-3 text-3xl font-bold text-slate-900">Welcome back, {profile.firstName || "tenant"}</h1>
             <p className="mt-2 text-sm text-slate-600">Manage your profile, saved homes, and search alerts in one place.</p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Link to="/listings" className="rounded-full border border-emerald-200 px-4 py-2 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-50">
+            <Link to="/listings" className="rounded-full border border-lime-200 px-4 py-2 text-sm font-semibold text-lime-700 transition hover:bg-lime-50">
               Browse listings
             </Link>
             <button type="button" className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
@@ -196,7 +196,7 @@ const TenantDashboard = () => {
         <div className="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
           <aside className="rounded-[2rem] border border-slate-200 bg-white p-4 shadow-sm">
             <div className="mb-4 rounded-2xl bg-slate-50 p-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-lime-100 text-lime-700">
                 <UserRound size={22} />
               </div>
               <p className="mt-3 font-semibold text-slate-900">{profile.firstName || "Your account"} {profile.lastName || ""}</p>
@@ -212,7 +212,7 @@ const TenantDashboard = () => {
                     type="button"
                     onClick={() => setActiveView(item.id)}
                     className={`flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-left text-sm font-medium transition ${
-                      activeView === item.id ? "bg-emerald-600 text-white" : "text-slate-600 hover:bg-slate-50"
+                      activeView === item.id ? "bg-lime-600 text-white" : "text-slate-600 hover:bg-slate-50"
                     }`}
                   >
                     <Icon size={16} />
@@ -231,11 +231,11 @@ const TenantDashboard = () => {
           <main className="space-y-6">
             <section className="grid gap-4 md:grid-cols-2">
               <div className="rounded-[2rem] border border-slate-200 bg-white p-5 shadow-sm">
-                <p className="text-sm text-slate-500">Saved listings</p>
+                <p className="text-sm text-lime-600">Saved listings</p>
                 <p className="mt-2 text-3xl font-bold text-slate-900">{stats.savedListings}</p>
               </div>
               <div className="rounded-[2rem] border border-slate-200 bg-white p-5 shadow-sm">
-                <p className="text-sm text-slate-500">Saved searches</p>
+                <p className="text-sm text-lime-600">Saved searches</p>
                 <p className="mt-2 text-3xl font-bold text-slate-900">{stats.savedSearches}</p>
               </div>
             </section>
@@ -248,7 +248,7 @@ const TenantDashboard = () => {
                       <h2 className="text-xl font-semibold text-slate-900">Your saved homes</h2>
                       <p className="mt-1 text-sm text-slate-600">Pick up where you left off and reopen your favorites.</p>
                     </div>
-                    <button type="button" onClick={() => setActiveView("saved-listings")} className="text-sm font-semibold text-emerald-700">
+                    <button type="button" onClick={() => setActiveView("saved-listings")} className="text-sm font-semibold text-lime-700">
                       View all
                     </button>
                   </div>
@@ -260,7 +260,7 @@ const TenantDashboard = () => {
                           <p className="mt-1 text-sm text-slate-500">{listing.location?.neighborhood || listing.location?.city}</p>
                         </div>
                         <div className="text-right">
-                          <p className="font-semibold text-emerald-700">{formatCurrency(listing.price)}</p>
+                          <p className="font-semibold text-lime-700">{formatCurrency(listing.price)}</p>
                           <p className="text-xs uppercase text-slate-400">{listing.listingType}</p>
                         </div>
                       </div>
@@ -274,7 +274,7 @@ const TenantDashboard = () => {
                       <h2 className="text-xl font-semibold text-slate-900">Saved searches</h2>
                       <p className="mt-1 text-sm text-slate-600">Stay on top of searches you care about.</p>
                     </div>
-                    <button type="button" onClick={() => setActiveView("saved-searches")} className="text-sm font-semibold text-emerald-700">
+                    <button type="button" onClick={() => setActiveView("saved-searches")} className="text-sm font-semibold text-lime-700">
                       View all
                     </button>
                   </div>
@@ -299,7 +299,7 @@ const TenantDashboard = () => {
                     <h2 className="text-xl font-semibold text-slate-900">Edit your profile</h2>
                     <p className="mt-1 text-sm text-slate-600">Keep your tenant profile current so we can better match you with homes.</p>
                   </div>
-                  <div className="rounded-full bg-emerald-50 p-2 text-emerald-700">
+                  <div className="rounded-full bg-lime-50 p-2 text-lime-700">
                     <PencilLine size={18} />
                   </div>
                 </div>
@@ -307,42 +307,42 @@ const TenantDashboard = () => {
                 <form onSubmit={handleSaveProfile} className="mt-6 grid gap-4 md:grid-cols-2">
                   <label className="text-sm text-slate-600">
                     <span className="mb-2 block font-medium text-slate-700">First name</span>
-                    <input name="firstName" value={profile.firstName} onChange={handleProfileChange} className="w-full rounded-2xl border border-slate-200 px-3 py-2 outline-none focus:border-emerald-500" />
+                    <input name="firstName" value={profile.firstName} onChange={handleProfileChange} className="w-full rounded-2xl border border-slate-200 px-3 py-2 outline-none focus:border-lime-500" />
                   </label>
                   <label className="text-sm text-slate-600">
                     <span className="mb-2 block font-medium text-slate-700">Last name</span>
-                    <input name="lastName" value={profile.lastName} onChange={handleProfileChange} className="w-full rounded-2xl border border-slate-200 px-3 py-2 outline-none focus:border-emerald-500" />
+                    <input name="lastName" value={profile.lastName} onChange={handleProfileChange} className="w-full rounded-2xl border border-slate-200 px-3 py-2 outline-none focus:border-lime-500" />
                   </label>
                   <label className="text-sm text-slate-600">
                     <span className="mb-2 block font-medium text-slate-700">Phone</span>
-                    <input name="phone" value={profile.phone} onChange={handleProfileChange} className="w-full rounded-2xl border border-slate-200 px-3 py-2 outline-none focus:border-emerald-500" />
+                    <input name="phone" value={profile.phone} onChange={handleProfileChange} className="w-full rounded-2xl border border-slate-200 px-3 py-2 outline-none focus:border-lime-500" />
                   </label>
                   <label className="text-sm text-slate-600">
                     <span className="mb-2 block font-medium text-slate-700">Monthly income</span>
-                    <input name="tenantProfile.monthlyIncome" value={profile.tenantProfile.monthlyIncome} onChange={handleProfileChange} className="w-full rounded-2xl border border-slate-200 px-3 py-2 outline-none focus:border-emerald-500" />
+                    <input name="tenantProfile.monthlyIncome" value={profile.tenantProfile.monthlyIncome} onChange={handleProfileChange} className="w-full rounded-2xl border border-slate-200 px-3 py-2 outline-none focus:border-lime-500" />
                   </label>
                   <label className="text-sm text-slate-600">
                     <span className="mb-2 block font-medium text-slate-700">Budget minimum</span>
-                    <input name="tenantProfile.budgetMin" value={profile.tenantProfile.budgetMin} onChange={handleProfileChange} className="w-full rounded-2xl border border-slate-200 px-3 py-2 outline-none focus:border-emerald-500" />
+                    <input name="tenantProfile.budgetMin" value={profile.tenantProfile.budgetMin} onChange={handleProfileChange} className="w-full rounded-2xl border border-slate-200 px-3 py-2 outline-none focus:border-lime-500" />
                   </label>
                   <label className="text-sm text-slate-600">
                     <span className="mb-2 block font-medium text-slate-700">Budget maximum</span>
-                    <input name="tenantProfile.budgetMax" value={profile.tenantProfile.budgetMax} onChange={handleProfileChange} className="w-full rounded-2xl border border-slate-200 px-3 py-2 outline-none focus:border-emerald-500" />
+                    <input name="tenantProfile.budgetMax" value={profile.tenantProfile.budgetMax} onChange={handleProfileChange} className="w-full rounded-2xl border border-slate-200 px-3 py-2 outline-none focus:border-lime-500" />
                   </label>
                   <label className="text-sm text-slate-600">
                     <span className="mb-2 block font-medium text-slate-700">Bedrooms needed</span>
-                    <input name="tenantProfile.bedroomsNeeded" value={profile.tenantProfile.bedroomsNeeded} onChange={handleProfileChange} className="w-full rounded-2xl border border-slate-200 px-3 py-2 outline-none focus:border-emerald-500" />
+                    <input name="tenantProfile.bedroomsNeeded" value={profile.tenantProfile.bedroomsNeeded} onChange={handleProfileChange} className="w-full rounded-2xl border border-slate-200 px-3 py-2 outline-none focus:border-lime-500" />
                   </label>
                   <label className="text-sm text-slate-600">
                     <span className="mb-2 block font-medium text-slate-700">Move in timeline</span>
-                    <input name="tenantProfile.moveInTimeline" value={profile.tenantProfile.moveInTimeline} onChange={handleProfileChange} className="w-full rounded-2xl border border-slate-200 px-3 py-2 outline-none focus:border-emerald-500" />
+                    <input name="tenantProfile.moveInTimeline" value={profile.tenantProfile.moveInTimeline} onChange={handleProfileChange} className="w-full rounded-2xl border border-slate-200 px-3 py-2 outline-none focus:border-lime-500" />
                   </label>
                   <label className="text-sm text-slate-600 md:col-span-2">
                     <span className="mb-2 block font-medium text-slate-700">Employment status</span>
-                    <input name="tenantProfile.employmentStatus" value={profile.tenantProfile.employmentStatus} onChange={handleProfileChange} className="w-full rounded-2xl border border-slate-200 px-3 py-2 outline-none focus:border-emerald-500" />
+                    <input name="tenantProfile.employmentStatus" value={profile.tenantProfile.employmentStatus} onChange={handleProfileChange} className="w-full rounded-2xl border border-slate-200 px-3 py-2 outline-none focus:border-lime-500" />
                   </label>
                   <div className="md:col-span-2">
-                    <button type="submit" disabled={savingProfile} className="rounded-full bg-emerald-600 px-5 py-2.5 font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-70">
+                    <button type="submit" disabled={savingProfile} className="rounded-full bg-lime-600 px-5 py-2.5 font-semibold text-white transition hover:bg-lime-700 disabled:cursor-not-allowed disabled:opacity-70">
                       {savingProfile ? "Saving..." : "Save profile"}
                     </button>
                   </div>
@@ -373,14 +373,14 @@ const TenantDashboard = () => {
                             <MapPin size={14} /> {listing.location?.neighborhood || listing.location?.city || "Prime location"}
                           </p>
                         </div>
-                        <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold uppercase text-emerald-700">
+                        <span className="rounded-full bg-lime-50 px-3 py-1 text-xs font-semibold uppercase text-lime-700">
                           {listing.listingType}
                         </span>
                       </div>
                       <p className="mt-3 text-sm text-slate-600">{listing.description?.slice(0, 120)}{listing.description?.length > 120 ? "..." : ""}</p>
                       <div className="mt-4 flex items-center justify-between">
-                        <p className="font-semibold text-emerald-700">{formatCurrency(listing.price)}</p>
-                        <Link to={`/listings/${listing._id}`} className="text-sm font-semibold text-emerald-700">Open</Link>
+                        <p className="font-semibold text-lime-700">{formatCurrency(listing.price)}</p>
+                        <Link to={`/listings/${listing._id}`} className="text-sm font-semibold text-lime-700">Open</Link>
                       </div>
                     </div>
                   )) : <p className="text-sm text-slate-500">You have not saved any properties yet.</p>}

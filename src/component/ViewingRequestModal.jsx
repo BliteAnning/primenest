@@ -44,7 +44,7 @@ export default function ViewingRequestModal({ listing, onSend, onClose }) {
       >
         <div className="flex items-start justify-between gap-3">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1 text-sm font-semibold text-emerald-700">
+            <div className="inline-flex items-center gap-2 rounded-full bg-lime-100 px-3 py-1 text-sm font-semibold text-lime-700">
               <CalendarClock size={15} /> Request a viewing
             </div>
             <h3 className="mt-3 text-lg font-semibold text-slate-900">{listing?.title}</h3>
@@ -66,7 +66,7 @@ export default function ViewingRequestModal({ listing, onSend, onClose }) {
               value={date}
               min={minDate}
               onChange={(event) => setDate(event.target.value)}
-              className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-emerald-500"
+              className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-lime-500"
             />
           </label>
           <label className="block text-sm text-slate-600">
@@ -77,7 +77,7 @@ export default function ViewingRequestModal({ listing, onSend, onClose }) {
               rows={3}
               maxLength={500}
               placeholder="Anything the agent should know before your visit"
-              className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-emerald-500"
+              className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-lime-500"
             />
           </label>
 
@@ -85,7 +85,7 @@ export default function ViewingRequestModal({ listing, onSend, onClose }) {
             <button
               type="submit"
               disabled={submitting}
-              className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-60"
+              className="inline-flex items-center gap-2 rounded-full bg-lime-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-lime-700 disabled:opacity-60"
             >
               {submitting ? <Loader2 size={16} className="animate-spin" /> : <CalendarClock size={16} />}
               Request viewing

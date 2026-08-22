@@ -123,6 +123,11 @@ const AdminContextProvider = ({ children }) => {
     return response?.data ?? null;
   }, []);
 
+  const getAllRiskAlerts = useCallback(async (params = {}) => {
+    const response = await axiosInstance.get("/admin/risk-alerts", { params });
+    return response?.data ?? null;
+  }, []);
+
   const resolveDispute = useCallback(async (listingId, alertId, decision, adminNote) => {
     const response = await axiosInstance.patch(
       `/risk-zones/listing/${listingId}/alerts/${alertId}/resolve`,
@@ -153,6 +158,7 @@ const AdminContextProvider = ({ children }) => {
     updateRiskZone,
     deactivateRiskZone,
     getRiskDisputes,
+    getAllRiskAlerts,
     resolveDispute,
   };
 

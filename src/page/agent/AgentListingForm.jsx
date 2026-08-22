@@ -442,7 +442,7 @@ export default function AgentListingForm({ user, editingListingId, onSaved }) {
           <button
             type="submit"
             disabled={saving}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-emerald-600 px-4 py-3 font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-lime-600 px-4 py-3 font-semibold text-white transition hover:bg-lime-700 disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
           >
             {saving ? <LoaderCircle className="animate-spin" size={18} /> : <Save size={18} />}
             {listingId ? "Save changes" : "Create listing"}
@@ -467,7 +467,7 @@ export default function AgentListingForm({ user, editingListingId, onSaved }) {
               type="button"
               onClick={handleUploadMedia}
               disabled={uploading || files.length === 0}
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-emerald-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-lime-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-lime-700 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {uploading ? <LoaderCircle className="animate-spin" size={16} /> : <Upload size={16} />}
               Upload

@@ -17,7 +17,7 @@ const formatDateTime = (value) =>
 
 const statusStyles = {
   requested: "bg-amber-100 text-amber-700",
-  confirmed: "bg-emerald-100 text-emerald-700",
+  confirmed: "bg-lime-100 text-lime-700",
   completed: "bg-slate-200 text-slate-700",
   cancelled: "bg-rose-100 text-rose-700",
   declined: "bg-rose-100 text-rose-700",
@@ -89,7 +89,7 @@ export default function TenantViewings() {
       <div className="flex flex-wrap items-center justify-between gap-4 rounded-[2rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
         <div>
           <h2 className="flex items-center gap-2 text-xl font-semibold text-slate-900">
-            <CalendarClock size={20} className="text-emerald-600" /> My viewings
+            <CalendarClock size={20} className="text-lime-600" /> My viewings
           </h2>
           <p className="mt-1 text-sm text-slate-500">
             {counts.total} total • {counts.requested || 0} awaiting confirmation
@@ -103,7 +103,7 @@ export default function TenantViewings() {
               onClick={() => setStatusFilter(filter.value)}
               className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
                 statusFilter === filter.value
-                  ? "border-emerald-600 bg-emerald-600 text-white"
+                  ? "border-lime-600 bg-lime-600 text-white"
                   : "border-slate-200 text-slate-600 hover:bg-slate-50"
               }`}
             >
@@ -117,7 +117,7 @@ export default function TenantViewings() {
 
       {loading ? (
         <div className="flex items-center justify-center rounded-[2rem] border border-slate-200 bg-white py-20 shadow-sm">
-          <Loader2 className="animate-spin text-emerald-600" size={32} />
+          <Loader2 className="animate-spin text-lime-600" size={32} />
         </div>
       ) : viewings.length === 0 ? (
         <div className="rounded-[2rem] border border-dashed border-slate-300 bg-white/60 p-10 text-center text-sm text-slate-500">
@@ -150,7 +150,7 @@ export default function TenantViewings() {
                   <p className="mt-1">{formatDateTime(viewing.requestedDate)}</p>
                 </div>
                 {viewing.confirmedDate ? (
-                  <div className="rounded-2xl bg-emerald-50 p-3 text-sm text-emerald-700">
+                  <div className="rounded-2xl bg-lime-50 p-3 text-sm text-lime-700">
                     <p className="font-semibold">Confirmed for</p>
                     <p className="mt-1">{formatDateTime(viewing.confirmedDate)}</p>
                   </div>

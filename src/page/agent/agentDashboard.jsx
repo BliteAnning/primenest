@@ -6,6 +6,7 @@ import {
   CalendarClock,
   CircleAlert,
   ClipboardList,
+  Handshake,
   Inbox,
   LayoutGrid,
   ListChecks,
@@ -15,6 +16,7 @@ import {
   ShieldAlert,
   Sparkles,
   UserRound,
+  VerifiedIcon,
 } from "lucide-react";
 import axiosInstance from "../../axiosInstance";
 import AgentOverview from "./AgentOverview";
@@ -24,6 +26,7 @@ import AgentRiskAlerts from "./AgentRiskAlerts";
 import AgentProfile from "./AgentProfile";
 import AgentInquiries from "./AgentInquiries";
 import AgentViewings from "./AgentViewings";
+import AgentDeals from "./AgentDeals";
 
 const sidebarItems = [
   { id: "overview", label: "Overview", icon: LayoutGrid },
@@ -31,6 +34,7 @@ const sidebarItems = [
   { id: "add-listing", label: "Add listing", icon: PlusCircle },
   { id: "inquiries", label: "Inquiries", icon: Inbox },
   { id: "viewings", label: "Viewings", icon: CalendarClock },
+  { id: "deals", label: "My deals", icon: Handshake },
   { id: "risk-alerts", label: "Risk alerts", icon: ShieldAlert },
   { id: "profile", label: "Profile", icon: UserRound },
 ];
@@ -106,7 +110,7 @@ export default function AgentDashboard() {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[linear-gradient(135deg,#f7fff9_0%,#ffffff_45%,#f0fdf4_100%)]">
-        <LoaderCircle className="animate-spin text-emerald-600" size={40} />
+        <LoaderCircle className="animate-spin text-lime-600" size={40} />
       </div>
     );
   }
@@ -118,7 +122,7 @@ export default function AgentDashboard() {
         <button
           type="button"
           onClick={() => window.location.reload()}
-          className="rounded-full bg-emerald-600 px-5 py-3 font-semibold text-white transition hover:bg-emerald-700"
+          className="rounded-full bg-lime-600 px-5 py-3 font-semibold text-white transition hover:bg-lime-700"
         >
           Try again
         </button>
@@ -132,20 +136,20 @@ export default function AgentDashboard() {
   return (
     <div className="min-h-screen bg-[linear-gradient(135deg,#f7fff9_0%,#ffffff_45%,#f0fdf4_100%)] px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-6 flex flex-col gap-3 rounded-4xl border border-emerald-100 bg-white/80 p-5 shadow-lg backdrop-blur sm:flex-row sm:items-center sm:justify-between">
+        <div className="mb-6 flex flex-col gap-3 rounded-4xl border border-lime-100 bg-white/80 p-5 shadow-lg backdrop-blur sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1 text-sm font-semibold text-emerald-700">
+            <p className="inline-flex items-center gap-2 rounded-full bg-lime-100 px-3 py-1 text-sm font-semibold text-lime-700">
               <Building2 size={16} /> Agent dashboard
             </p>
             <h1 className="mt-3 text-3xl font-bold text-slate-900">Welcome back, {user.firstName || "agent"}</h1>
             <p className="mt-2 text-sm text-slate-600">Manage your listings, media, risk alerts, and profile from one place.</p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <span className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold ${isApproved ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}>
+            <span className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold ${isApproved ? "bg-lime-100 text-lime-700" : "bg-amber-100 text-amber-700"}`}>
               <BadgeCheck size={16} /> {isApproved ? "Approved" : "Pending approval"}
             </span>
-            <span className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold ${isVerified ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-600"}`}>
-              <Sparkles size={16} /> {isVerified ? "Verified agent" : "Not verified"}
+            <span className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold ${isVerified ? "bg-lime-100 text-lime-700" : "bg-slate-100 text-slate-600"}`}>
+              <VerifiedIcon size={16} /> {isVerified ? "Verified agent" : "Not verified"}
             </span>
             <button type="button" onClick={handleLogout} className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
               <LogOut size={16} /> Logout
@@ -161,7 +165,7 @@ export default function AgentDashboard() {
             </p>
           </div>
         ) : !isVerified ? (
-          <div className="mb-6 flex items-start gap-3 rounded-3xl border border-sky-200 bg-sky-50 p-4 text-sm text-sky-800">
+          <div className="mb-6 flex items-start gap-3 rounded-3xl border border-sky-200 bg-sky-50 p-4 text-sm text-lime-700">
             <ClipboardList size={18} className="mt-0.5 shrink-0" />
             <p>
               You&apos;re approved and can create listings, but they&apos;ll go through a quick admin review before appearing publicly. Get verified from your profile tab for instant publishing.
@@ -172,7 +176,7 @@ export default function AgentDashboard() {
         <div className="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
           <aside className="h-fit rounded-4xl border border-slate-200 bg-white p-4 shadow-sm lg:sticky lg:top-24">
             <div className="mb-4 rounded-2xl bg-slate-50 p-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-lime-100 text-lime-700">
                 <UserRound size={22} />
               </div>
               <p className="mt-3 font-semibold text-slate-900">{user.firstName} {user.lastName}</p>
@@ -191,7 +195,7 @@ export default function AgentDashboard() {
                       setActiveTab(item.id);
                     }}
                     className={`flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-left text-sm font-medium transition ${
-                      activeTab === item.id ? "bg-emerald-600 text-white" : "text-slate-600 hover:bg-slate-50"
+                      activeTab === item.id ? "bg-lime-600 text-white" : "text-slate-600 hover:bg-slate-50"
                     }`}
                   >
                     <Icon size={18} /> {item.label}
@@ -210,6 +214,7 @@ export default function AgentDashboard() {
             {activeTab === "risk-alerts" ? <AgentRiskAlerts /> : null}
             {activeTab === "inquiries" ? <AgentInquiries /> : null}
             {activeTab === "viewings" ? <AgentViewings /> : null}
+            {activeTab === "deals" ? <AgentDeals /> : null}
             {activeTab === "profile" ? <AgentProfile user={user} onUserUpdate={handleUserUpdate} /> : null}
           </section>
         </div>

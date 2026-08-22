@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import {
   ArrowLeft,
@@ -13,6 +13,7 @@ import {
   Trash2,
 } from "lucide-react";
 import axiosInstance from "../../axiosInstance";
+import { engagementContext } from "../../context/engagementContext";
 
 const formatCurrency = (value) =>
   new Intl.NumberFormat("en-GH", { style: "currency", currency: "GHS", maximumFractionDigits: 0 }).format(value || 0);
@@ -77,6 +78,7 @@ const statusFilters = [
 ];
 
 export default function AgentListings({ onEditListing }) {
+  const { fetchAgentViewings } = useContext(engagementContext);
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -86,7 +88,10 @@ export default function AgentListings({ onEditListing }) {
   const [detailLoading, setDetailLoading] = useState(false);
   const [actionListingId, setActionListingId] = useState(null);
   const [dealModal, setDealModal] = useState(null); // { listingId, action, label }
-  const [dealForm, setDealForm] = useState({ buyerEmail: "", amount: "", notes: "" });
+  const [dealForm, setDealForm] = useState({ amount: "", buyerId: "", buyerName: "", buyerContact: "", notes: "" });
+  const [buyerMode, setBuyerMode] = useState("existing"); // "existing" | "manual"
+  const [viewingRequesters, setViewingRequesters] = useState([]);
+  const [requestersLoading, setRequestersLoading] = useState(false);
   const [dealSubmitting, setDealSubmitting] = useState(false);
 
   useEffect(() => {
@@ -165,8 +170,30 @@ export default function AgentListings({ onEditListing }) {
 
   const handleActionClick = (id, action, label) => {
     if (action === "mark_let" || action === "mark_sold") {
-      setDealForm({ buyerEmail: "", amount: "", notes: "" });
+      setDealForm({ amount: "", buyerId: "", buyerName: "", buyerContact: "", notes: "" });
+      setBuyerMode("existing");
       setDealModal({ listingId: id, action, label });
+      setRequestersLoading(true);
+      fetchAgentViewings({ listing: id })
+        .then((viewings) => {
+          const uniqueTenants = [];
+          const seen = new Set();
+          (viewings || []).forEach((viewing) => {
+            const tenant = viewing.tenant;
+            if (tenant?._id && !seen.has(tenant._id)) {
+              seen.add(tenant._id);
+              uniqueTenants.push(tenant);
+            }
+          });
+          setViewingRequesters(uniqueTenants);
+          if (uniqueTenants.length === 0) setBuyerMode("manual");
+        })
+        .catch((err) => {
+          console.error(err);
+          setViewingRequesters([]);
+          setBuyerMode("manual");
+        })
+        .finally(() => setRequestersLoading(false));
       return;
     }
     handleStatusChange(id, action);
@@ -175,20 +202,39 @@ export default function AgentListings({ onEditListing }) {
   const closeDealModal = () => {
     if (dealSubmitting) return;
     setDealModal(null);
+    setViewingRequesters([]);
   };
 
   const submitDeal = async (event) => {
     event.preventDefault();
     if (!dealModal) return;
+    if (!dealForm.amount || Number(dealForm.amount) <= 0) {
+      toast.error("Please enter the amount paid for this deal.");
+      return;
+    }
+    if (buyerMode === "existing" && !dealForm.buyerId) {
+      toast.error("Please select the tenant/buyer from the list.");
+      return;
+    }
+    if (buyerMode === "manual" && !dealForm.buyerName.trim()) {
+      toast.error("Please enter the tenant/buyer's name.");
+      return;
+    }
+
     setDealSubmitting(true);
     const extra = {
-      buyerEmail: dealForm.buyerEmail.trim() || undefined,
-      amount: dealForm.amount ? Number(dealForm.amount) : undefined,
+      amount: Number(dealForm.amount),
       notes: dealForm.notes.trim() || undefined,
+      ...(buyerMode === "existing"
+        ? { buyerId: dealForm.buyerId }
+        : { buyerName: dealForm.buyerName.trim(), buyerContact: dealForm.buyerContact.trim() || undefined }),
     };
     const ok = await handleStatusChange(dealModal.listingId, dealModal.action, extra);
     setDealSubmitting(false);
-    if (ok) setDealModal(null);
+    if (ok) {
+      setDealModal(null);
+      setViewingRequesters([]);
+    }
   };
 
   if (selectedId) {
@@ -342,31 +388,97 @@ export default function AgentListings({ onEditListing }) {
             <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-xl">
               <h3 className="text-lg font-semibold text-slate-900">{dealModal.label}</h3>
               <p className="mt-1 text-sm text-slate-500">
-                Optionally record the tenant/buyer's account email so this deal shows up in their history and in the
-                admin dashboard's sales &amp; rentals overview.
+                Payment happens directly between you and the tenant/buyer — record the amount paid and who the deal
+                was with so it shows up here and in the admin dashboard.
               </p>
               <form onSubmit={submitDeal} className="mt-4 space-y-3">
                 <div>
-                  <label className="text-xs font-semibold uppercase text-slate-500">Tenant/buyer email (optional)</label>
-                  <input
-                    type="email"
-                    value={dealForm.buyerEmail}
-                    onChange={(event) => setDealForm((current) => ({ ...current, buyerEmail: event.target.value }))}
-                    placeholder="tenant@example.com"
-                    className="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-2 text-sm outline-none focus:border-emerald-500"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs font-semibold uppercase text-slate-500">Deal amount (GHS, optional)</label>
+                  <label className="text-xs font-semibold uppercase text-slate-500">Amount paid (GHS)</label>
                   <input
                     type="number"
                     min="0"
+                    required
                     value={dealForm.amount}
                     onChange={(event) => setDealForm((current) => ({ ...current, amount: event.target.value }))}
                     placeholder={formatCurrency(selectedListing?.price)}
                     className="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-2 text-sm outline-none focus:border-emerald-500"
                   />
                 </div>
+
+                <div>
+                  <label className="text-xs font-semibold uppercase text-slate-500">Tenant/buyer</label>
+                  <div className="mt-1 flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setBuyerMode("existing")}
+                      className={`flex-1 rounded-2xl border px-3 py-2 text-xs font-semibold transition ${
+                        buyerMode === "existing" ? "border-emerald-500 bg-emerald-50 text-emerald-700" : "border-slate-200 text-slate-500"
+                      }`}
+                    >
+                      Select from viewing requests
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setBuyerMode("manual")}
+                      className={`flex-1 rounded-2xl border px-3 py-2 text-xs font-semibold transition ${
+                        buyerMode === "manual" ? "border-emerald-500 bg-emerald-50 text-emerald-700" : "border-slate-200 text-slate-500"
+                      }`}
+                    >
+                      Enter details manually
+                    </button>
+                  </div>
+                </div>
+
+                {buyerMode === "existing" ? (
+                  requestersLoading ? (
+                    <div className="flex items-center gap-2 text-sm text-slate-500">
+                      <LoaderCircle size={16} className="animate-spin" /> Loading viewing requesters...
+                    </div>
+                  ) : viewingRequesters.length === 0 ? (
+                    <p className="rounded-2xl bg-amber-50 p-3 text-xs text-amber-700">
+                      No one has requested a viewing for this listing yet. Switch to "Enter details manually" instead.
+                    </p>
+                  ) : (
+                    <select
+                      required
+                      value={dealForm.buyerId}
+                      onChange={(event) => setDealForm((current) => ({ ...current, buyerId: event.target.value }))}
+                      className="w-full rounded-2xl border border-slate-200 px-4 py-2 text-sm outline-none focus:border-emerald-500"
+                    >
+                      <option value="">Select a tenant/buyer...</option>
+                      {viewingRequesters.map((tenant) => (
+                        <option key={tenant._id} value={tenant._id}>
+                          {tenant.firstName} {tenant.lastName} ({tenant.email})
+                        </option>
+                      ))}
+                    </select>
+                  )
+                ) : (
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-xs font-semibold uppercase text-slate-500">Tenant/buyer name</label>
+                      <input
+                        type="text"
+                        required
+                        value={dealForm.buyerName}
+                        onChange={(event) => setDealForm((current) => ({ ...current, buyerName: event.target.value }))}
+                        placeholder="e.g. Kwame Mensah"
+                        className="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-2 text-sm outline-none focus:border-emerald-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-semibold uppercase text-slate-500">Phone or email (optional)</label>
+                      <input
+                        type="text"
+                        value={dealForm.buyerContact}
+                        onChange={(event) => setDealForm((current) => ({ ...current, buyerContact: event.target.value }))}
+                        placeholder="024 000 0000"
+                        className="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-2 text-sm outline-none focus:border-emerald-500"
+                      />
+                    </div>
+                  </div>
+                )}
+
                 <div>
                   <label className="text-xs font-semibold uppercase text-slate-500">Notes (optional)</label>
                   <textarea

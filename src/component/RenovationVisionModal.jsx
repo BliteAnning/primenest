@@ -224,7 +224,7 @@ export default function RenovationVisionModal({ listing, onClose }) {
         onClick={(event) => event.stopPropagation()}
       >
         {/* Header */}
-        <div className="relative overflow-hidden bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-500 px-6 py-6 text-white sm:px-8">
+        <div className="relative overflow-hidden bg-gradient-to-r from-lime-600 via-lime-500 to-green-500 px-6 py-6 text-white sm:px-8">
           <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
           <div className="relative flex items-start justify-between gap-3">
             <div>
@@ -253,7 +253,7 @@ export default function RenovationVisionModal({ listing, onClose }) {
                 <div key={s} className="flex flex-1 items-center gap-2">
                   <div
                     className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
-                      index <= currentStepIndex ? "bg-white text-emerald-700" : "bg-white/20 text-white"
+                      index <= currentStepIndex ? "bg-white text-lime-700" : "bg-white/20 text-white"
                     }`}
                   >
                     {index < currentStepIndex ? <CheckCircle2 size={14} /> : index + 1}
@@ -301,13 +301,13 @@ export default function RenovationVisionModal({ listing, onClose }) {
                       onClick={() => setSelectedPhoto(photo)}
                       className={`group relative overflow-hidden rounded-2xl border-2 transition ${
                         selectedPhoto?._id === photo._id
-                          ? "border-emerald-500 ring-2 ring-emerald-200"
-                          : "border-transparent hover:border-emerald-200"
+                          ? "border-lime-500 ring-2 ring-lime-200"
+                          : "border-transparent hover:border-lime-200"
                       }`}
                     >
                       <img src={photo.url} alt={photo.caption || "Listing photo"} className="h-28 w-full object-cover sm:h-32" />
                       {selectedPhoto?._id === photo._id && (
-                        <div className="absolute right-2 top-2 rounded-full bg-emerald-600 p-1 text-white shadow">
+                        <div className="absolute right-2 top-2 rounded-full bg-lime-600 p-1 text-white shadow">
                           <CheckCircle2 size={14} />
                         </div>
                       )}
@@ -336,7 +336,7 @@ export default function RenovationVisionModal({ listing, onClose }) {
                     rows={5}
                     maxLength={300}
                     placeholder="e.g. add a reading nook by the window, warm wood tones, keep the ceiling white..."
-                    className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-emerald-500"
+                    className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-lime-500"
                   />
                   <p className="text-right text-xs text-slate-400">{customPrompt.length}/300</p>
                 </div>
@@ -367,12 +367,12 @@ export default function RenovationVisionModal({ listing, onClose }) {
                         type="button"
                         onClick={() => setSelectedStyle(style)}
                         className={`rounded-2xl border-2 bg-gradient-to-br p-4 text-left transition ${visual.gradient} ${
-                          isActive ? "border-emerald-500 ring-2 ring-emerald-200" : "border-transparent hover:border-emerald-200"
+                          isActive ? "border-emerald-500 ring-2 ring-emerald-200" : "border-transparent hover:border-lime-200"
                         }`}
                       >
                         <div className="flex items-center justify-between">
                           <span className="text-2xl">{visual.emoji}</span>
-                          {isActive && <CheckCircle2 className="text-emerald-600" size={18} />}
+                          {isActive && <CheckCircle2 className="text-lime-600" size={18} />}
                         </div>
                         <p className="mt-3 font-semibold text-slate-900">{style.label}</p>
                         <p className="mt-1 text-xs text-slate-600">{style.description}</p>
@@ -388,7 +388,7 @@ export default function RenovationVisionModal({ listing, onClose }) {
             <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">
               <div className="relative flex h-20 w-20 items-center justify-center">
                 <div className="absolute inset-0 animate-ping rounded-full bg-emerald-200/60" />
-                <div className="relative flex h-16 w-16 items-center justify-center rounded-full bg-emerald-600 text-white">
+                <div className="relative flex h-16 w-16 items-center justify-center rounded-full bg-lime-600 text-white">
                   <Wand2 size={26} />
                 </div>
               </div>
@@ -413,19 +413,19 @@ export default function RenovationVisionModal({ listing, onClose }) {
 
           {step === "result" && result && (
             <div>
-              <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">
+              <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-lime-50 px-4 py-3 text-sm font-semibold text-lime-700">
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 size={18} />
+                  <CheckCircle2 className="text-lime-600" size={18} />
                   {result.styleLabel || selectedStyle?.label
                     ? `Here's your ${result.styleLabel || selectedStyle?.label} vision`
                     : "Here's your redesigned space"}
-                  {result.cached && <span className="font-normal text-emerald-600">(previously generated)</span>}
+                  {result.cached && <span className="font-normal text-lime-600">(previously generated)</span>}
                 </div>
                 {result.cached && (
                   <button
                     type="button"
                     onClick={() => handleGenerate(true)}
-                    className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-emerald-700"
+                    className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-lime-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-lime-700"
                   >
                     <RefreshCcw size={13} /> Generate new version
                   </button>
@@ -438,7 +438,7 @@ export default function RenovationVisionModal({ listing, onClose }) {
                   <img src={result.originalImageUrl} alt="Before" className="h-56 w-full rounded-2xl object-cover sm:h-64" />
                 </div>
                 <div>
-                  <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-emerald-600">After</p>
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-lime-600">After</p>
                   <img src={result.generatedImageUrl} alt="After" className="h-56 w-full rounded-2xl object-cover sm:h-64" />
                 </div>
               </div>
@@ -447,7 +447,7 @@ export default function RenovationVisionModal({ listing, onClose }) {
                 href={result.generatedImageUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-emerald-700 hover:underline"
+                className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-lime-700 hover:underline"
               >
                 <ExternalLink size={14} /> Open full-size image
               </a>
@@ -455,9 +455,9 @@ export default function RenovationVisionModal({ listing, onClose }) {
               {result.costEstimate && (
                 <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-5">
                   <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
-                    <Coins size={16} className="text-emerald-600" /> Estimated renovation cost
+                    <Coins size={16} className="text-lime-600" /> Estimated renovation cost
                   </div>
-                  <p className="mt-1 text-2xl font-bold text-emerald-700">
+                  <p className="mt-1 text-2xl font-bold text-lime-700">
                     {result.costEstimate.currency || "GHS"} {result.costEstimate.min?.toLocaleString()} –{" "}
                     {result.costEstimate.max?.toLocaleString()}
                   </p>
@@ -468,7 +468,7 @@ export default function RenovationVisionModal({ listing, onClose }) {
                         <div key={key} className="rounded-xl bg-white px-3 py-2 text-xs text-slate-600 shadow-sm">
                           <p className="font-semibold capitalize text-slate-800">{key}</p>
                           <p>
-                            GHS {value.min?.toLocaleString()} – {value.max?.toLocaleString()}
+                            {result.costEstimate.currency || "GHS"} {value.min?.toLocaleString()} – {value.max?.toLocaleString()}
                           </p>
                           {(value.material || value.treatment || value.type || value.note) && (
                             <p className="mt-0.5 text-slate-400">{value.material || value.treatment || value.type || value.note}</p>
@@ -521,7 +521,7 @@ export default function RenovationVisionModal({ listing, onClose }) {
                   type="button"
                   disabled={!customPrompt.trim()}
                   onClick={() => goToStep("style")}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-lime-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-lime-700 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   Next <ArrowRight size={15} />
                 </button>
@@ -540,7 +540,7 @@ export default function RenovationVisionModal({ listing, onClose }) {
                 <button
                   type="button"
                   onClick={() => handleGenerate(false)}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-lime-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-lime-700"
                 >
                   <Wand2 size={16} /> Generate my vision
                 </button>
@@ -559,7 +559,7 @@ export default function RenovationVisionModal({ listing, onClose }) {
                 <button
                   type="button"
                   onClick={handleClose}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-lime-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-lime-700"
                 >
                   Done
                 </button>

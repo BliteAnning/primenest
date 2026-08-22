@@ -136,7 +136,7 @@ export default function AgentRiskAlerts() {
                           type="button"
                           disabled={submittingId === alert._id}
                           onClick={() => handleSubmitDispute(listing._id, alert._id)}
-                          className="rounded-full bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-60"
+                          className="rounded-full bg-lime-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-lime-700 disabled:opacity-60"
                         >
                           {submittingId === alert._id ? "Submitting..." : "Submit dispute"}
                         </button>

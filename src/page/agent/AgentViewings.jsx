@@ -25,7 +25,7 @@ const formatDateTime = (value) =>
 
 const statusStyles = {
   requested: "bg-amber-100 text-amber-700",
-  confirmed: "bg-emerald-100 text-emerald-700",
+  confirmed: "bg-lime-100 text-lime-700",
   completed: "bg-slate-200 text-slate-700",
   cancelled: "bg-rose-100 text-rose-700",
   declined: "bg-rose-100 text-rose-700",
@@ -107,7 +107,7 @@ export default function AgentViewings() {
       <div className="flex flex-wrap items-center justify-between gap-4 rounded-4xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
         <div>
           <h2 className="flex items-center gap-2 text-xl font-semibold text-slate-900">
-            <CalendarClock size={20} className="text-emerald-600" /> Viewings
+            <CalendarClock size={20} className="text-lime-600" /> Viewings
           </h2>
           <p className="mt-1 text-sm text-slate-500">
             {counts.total} total • {counts.requested || 0} awaiting your confirmation
@@ -121,7 +121,7 @@ export default function AgentViewings() {
               onClick={() => setStatusFilter(filter.value)}
               className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
                 statusFilter === filter.value
-                  ? "border-emerald-600 bg-emerald-600 text-white"
+                  ? "border-lime-600 bg-lime-600 text-white"
                   : "border-slate-200 text-slate-600 hover:bg-slate-50"
               }`}
             >
@@ -135,7 +135,7 @@ export default function AgentViewings() {
 
       {loading ? (
         <div className="flex items-center justify-center rounded-4xl border border-slate-200 bg-white py-20 shadow-sm">
-          <Loader2 className="animate-spin text-emerald-600" size={32} />
+          <Loader2 className="animate-spin text-lime-600" size={32} />
         </div>
       ) : viewings.length === 0 ? (
         <div className="rounded-4xl border border-dashed border-slate-300 bg-white/60 p-10 text-center text-sm text-slate-500">
@@ -199,7 +199,7 @@ export default function AgentViewings() {
                       type="button"
                       onClick={() => handleConfirm(viewing._id)}
                       disabled={actionId === viewing._id}
-                      className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-60"
+                      className="inline-flex items-center gap-2 rounded-full bg-lime-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-lime-700 disabled:opacity-60"
                     >
                       <CheckCircle2 size={15} /> Confirm
                     </button>
@@ -219,7 +219,7 @@ export default function AgentViewings() {
                       type="button"
                       onClick={() => handleComplete(viewing._id)}
                       disabled={actionId === viewing._id}
-                      className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-60"
+                      className="inline-flex items-center gap-2 rounded-full bg-lime-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-lime-700 disabled:opacity-60"
                     >
                       <CheckCircle2 size={15} /> Mark completed
                     </button>

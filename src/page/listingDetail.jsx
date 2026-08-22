@@ -143,17 +143,17 @@ export default function ListingDetail() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[linear-gradient(135deg,#f7fff9_0%,#ffffff_45%,#f0fdf4_100%)]">
-        <div className="h-16 w-16 animate-spin rounded-full border-4 border-emerald-200 border-t-emerald-600" />
+      <div className="flex min-h-screen items-center justify-center bg-[linear-gradient(135deg,rgba(67,134,8,0.08)_0%,rgba(67,134,25,0.03)_50%,rgba(67,134,25,0.09)_100%)]">
+        <div className="h-16 w-16 animate-spin rounded-full border-4 border-[#438608]/20 border-t-[#438608]" />
       </div>
     );
   }
 
   if (!listing) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-[linear-gradient(135deg,#f7fff9_0%,#ffffff_45%,#f0fdf4_100%)] px-6 text-center">
+      <div className="flex min-h-screen flex-col items-center justify-center bg-[linear-gradient(135deg,rgba(67,134,8,0.08)_0%,rgba(67,134,25,0.03)_50%,rgba(67,134,25,0.09)_100%)] px-6 text-center">
         <p className="text-xl font-semibold text-slate-900">We could not load this listing right now.</p>
-        <Link to="/listings" className="mt-4 inline-flex items-center gap-2 text-emerald-700 hover:underline">
+        <Link to="/listings" className="mt-4 inline-flex items-center gap-2 text-[#438608] transition-transform duration-300 hover:-translate-x-1 hover:underline">
           <ArrowLeft size={16} /> See other homes
         </Link>
       </div>
@@ -161,18 +161,18 @@ export default function ListingDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-[linear-gradient(135deg,#f7fff9_0%,#ffffff_45%,#f0fdf4_100%)] px-4 py-8 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[linear-gradient(135deg,rgba(67,134,8,0.08)_0%,rgba(67,134,25,0.03)_50%,rgba(67,134,25,0.09)_100%)] px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <Link to="/listings" className="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-emerald-700 hover:underline">
+        <Link to="/listings" className="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-[#438608] transition-transform duration-300 hover:-translate-x-1 hover:underline">
           <ArrowLeft size={16} /> Back to listings
         </Link>
 
-        <div className="overflow-hidden rounded-4xl border border-slate-200 bg-white shadow-2xl">
+        <div className="overflow-hidden rounded-4xl  bg-white">
           <div className="grid gap-0 lg:grid-cols-[1.15fr_0.85fr]">
             <div className="bg-slate-100 p-3 sm:p-4">
-              <div className="relative overflow-hidden rounded-3xl">
-                <img src={mainImage} alt={listing.title} className="h-80 w-full object-cover sm:h-110" />
-                <div className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-sm font-semibold text-emerald-700">
+              <div className="group relative overflow-hidden rounded-3xl">
+                <img src={mainImage} alt={listing.title} className="h-80 w-full object-cover transition duration-700 ease-out group-hover:scale-105 sm:h-110" />
+                <div className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-sm font-semibold text-[#438608] transition-transform duration-300 group-hover:scale-105">
                   {listing.listingType === "sale" ? "For Sale" : "For Rent"}
                 </div>
                 <div className="absolute bottom-4 left-4 rounded-full bg-slate-900/70 px-3 py-1 text-sm font-medium text-white">
@@ -187,9 +187,9 @@ export default function ListingDetail() {
                       key={`${image}-${index}`}
                       type="button"
                       onClick={() => setActiveImage(index)}
-                      className={`overflow-hidden rounded-2xl border ${activeImage === index ? "border-emerald-500" : "border-transparent"}`}
+                      className={`overflow-hidden rounded-2xl border transition-all duration-300 hover:-translate-y-0.5 ${activeImage === index ? "border-[#438608] shadow-md shadow-[#438608]/15" : "border-transparent hover:border-[#438608]/20"}`}
                     >
-                      <img src={image} alt={`Preview ${index + 1}`} className="h-20 w-full object-cover" />
+                      <img src={image} alt={`Preview ${index + 1}`} className="h-20 w-full object-cover transition duration-500 hover:scale-110" />
                     </button>
                   ))}
                 </div>
@@ -197,8 +197,8 @@ export default function ListingDetail() {
             </div>
 
             <div className="p-6 sm:p-8 lg:p-10">
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1 text-sm font-semibold text-emerald-700">
-                <Sparkles size={16} />
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-[#438608]/10 px-3 py-1 text-sm font-semibold text-[#438608] motion-safe:animate-pulse">
+               
                 Curated property
               </div>
 
@@ -215,17 +215,17 @@ export default function ListingDetail() {
                   onClick={handleSaveToggle}
                   disabled={saving}
                   className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition ${
-                    isSaved ? "bg-emerald-600 text-white" : "border border-emerald-200 bg-emerald-50 text-emerald-700"
-                  } ${saving ? "opacity-70" : "hover:brightness-95"}`}
+                    isSaved ? "bg-[#438608] text-white shadow-lg shadow-[#438608]/20" : "border border-[#438608]/20 bg-[#438608]/10 text-[#438608]"
+                  } ${saving ? "opacity-70" : "hover:-translate-y-0.5 hover:brightness-95"}`}
                 >
                   {isSaved ? <Heart size={16} /> : <HeartOff size={16} />}
                   {saving ? "Saving..." : isSaved ? "Saved" : "Save listing"}
                 </button>
               </div>
 
-              {saveMessage ? <p className="mt-3 text-sm text-emerald-700">{saveMessage}</p> : null}
+              {saveMessage ? <p className="mt-3 text-sm text-[#438608]">{saveMessage}</p> : null}
 
-              <p className="mt-4 text-4xl font-bold text-emerald-600">{formatCurrency(listing.price)}</p>
+              <p className="mt-4 text-4xl font-bold text-[#438608]">{formatCurrency(listing.price)}</p>
               <p className="mt-2 text-sm text-slate-500">
                 {listing.propertyType} • {listing.listingType} • {listing.status || "active"}
               </p>
@@ -256,10 +256,10 @@ export default function ListingDetail() {
           </div>
 
           {hasRenovatablePhotos ? (
-            <div className="border-t border-slate-200 bg-gradient-to-br from-emerald-50 via-white to-teal-50 p-6 sm:p-8 lg:p-10">
+            <div className="border-t border-slate-200 bg-[linear-gradient(135deg,rgba(67,134,8,0.08)_0%,rgba(67,134,25,0.03)_50%,rgba(67,134,25,0.1)_100%)] p-6 sm:p-8 lg:p-10">
               <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
                 <div>
-                  <div className="inline-flex items-center gap-2 rounded-full bg-emerald-600/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-emerald-700">
+                  <div className="inline-flex items-center gap-2 rounded-full bg-[#438608]/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-[#438608] motion-safe:animate-pulse">
                     <Sparkles size={14} /> New · AI powered
                   </div>
                   <h3 className="mt-3 text-xl font-bold text-slate-900">See this space redesigned in your style</h3>
@@ -271,7 +271,7 @@ export default function ListingDetail() {
                 <button
                   type="button"
                   onClick={handleOpenRenovationVision}
-                  className="inline-flex shrink-0 items-center gap-2 rounded-full bg-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-600/20 transition hover:bg-emerald-700"
+                  className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#438608] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-[#438608]/20 transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#3b7808]"
                 >
                   <Wand2 size={16} /> Try Renovation Vision
                 </button>
@@ -317,7 +317,7 @@ export default function ListingDetail() {
                   {amenityList.length ? (
                     <div className="mt-4 flex flex-wrap gap-2">
                       {amenityList.map(([name]) => (
-                        <span key={name} className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-sm text-emerald-700">
+                        <span key={name} className="rounded-full border border-[#438608]/20 bg-[#438608]/10 px-3 py-1 text-sm text-[#438608] transition-transform duration-300 hover:-translate-y-0.5">
                           {name.replace(/([A-Z])/g, " $1").trim()}
                         </span>
                       ))}
@@ -355,7 +355,7 @@ export default function ListingDetail() {
                 <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
                   <h3 className="text-lg font-semibold text-slate-900">Listed by</h3>
                   <div className="mt-4 flex items-center gap-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#438608]/10 text-[#438608] transition-transform duration-300 hover:scale-105">
                       <UserRound size={20} />
                     </div>
                     <div>
@@ -378,14 +378,14 @@ export default function ListingDetail() {
                       <button
                         type="button"
                         onClick={() => setShowInquiryModal(true)}
-                        className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700"
+                        className="inline-flex items-center gap-2 rounded-full bg-[#438608] px-4 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#3b7808]"
                       >
                         <Mail size={16} /> Send an inquiry
                       </button>
                       <button
                         type="button"
                         onClick={() => setShowViewingModal(true)}
-                        className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-100"
+                        className="inline-flex items-center gap-2 rounded-full border border-[#438608]/20 bg-[#438608]/10 px-4 py-2.5 text-sm font-semibold text-[#438608] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#438608]/15"
                       >
                         <CalendarClock size={16} /> Request a viewing
                       </button>

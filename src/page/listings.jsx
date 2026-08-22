@@ -1,4 +1,6 @@
 import { useContext, useEffect, useMemo, useState } from "react";
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import {
   ArrowRight,
@@ -8,8 +10,10 @@ import {
   BrainCircuit,
   Calculator,
   CircleAlert,
+  HomeIcon,
   LoaderCircle,
   Lock,
+  LucideCreditCard,
   MapPin,
   RefreshCw,
   Search,
@@ -58,7 +62,7 @@ const getAdvanceAmount = (advancePayment, months, fallbackMonthlyMax) => {
 };
 
 const affordabilityTone = {
-  Comfortable: "border-emerald-200 bg-emerald-50 text-emerald-700",
+  Comfortable: "border-[#438608]/20 bg-[#438608]/10 text-[#438608]",
   Moderate: "border-amber-200 bg-amber-50 text-amber-700",
   Stretched: "border-orange-200 bg-orange-50 text-orange-700",
   "At Risk": "border-rose-200 bg-rose-50 text-rose-700",
@@ -285,12 +289,12 @@ export default function Listings() {
   };
 
   return (
-    <div className="min-h-screen bg-[linear-gradient(135deg,#f7fff9_0%,#ffffff_45%,#f0fdf4_100%)] px-4 py-8 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[linear-gradient(135deg,rgba(67,134,8,0.08)_0%,rgba(67,134,25,0.03)_50%,rgba(67,134,25,0.09)_100%)] px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <header className="mb-8 flex flex-col gap-5 rounded-4xl border border-emerald-100 bg-white/80 p-6 shadow-lg backdrop-blur md:flex-row md:items-end md:justify-between">
+        <header className="mb-8 flex flex-col gap-5 rounded-4xl border border-[#438608]/15 bg-white/85 p-6 shadow-lg backdrop-blur transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl md:flex-row md:items-end md:justify-between">
           <div>
-            <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1 text-sm font-semibold text-emerald-700">
-              <Sparkles size={16} />
+            <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-[#438608]/10 px-3 py-1 text-sm font-semibold text-[#438608] motion-safe:animate-pulse">
+              <HomeIcon size={16} />
               Homes tailored for tenants and buyers
             </div>
             <h1 className="text-3xl font-bold text-slate-900 sm:text-4xl">Discover the latest listings</h1>
@@ -298,64 +302,72 @@ export default function Listings() {
               Browse verified properties, compare spaces, and open detailed pages for each home.
             </p>
           </div>
-          <Link to="/" className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-700 hover:underline">
+          <Link to="/" className="inline-flex items-center gap-2 text-sm font-semibold text-[#438608] transition-transform duration-300 hover:translate-x-1 hover:underline">
             Back to home <ArrowRight size={16} />
           </Link>
         </header>
 
         <section className="mb-8 grid gap-4 md:grid-cols-3">
-          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#438608]/20 hover:shadow-lg">
             <p className="text-sm text-slate-500">Fresh listings</p>
             <p className="mt-2 text-2xl font-bold text-slate-900">{listings.length}</p>
           </div>
-          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#438608]/20 hover:shadow-lg">
             <p className="text-sm text-slate-500">Featured homes</p>
             <p className="mt-2 text-2xl font-bold text-slate-900">{featuredCount}</p>
           </div>
-          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#438608]/20 hover:shadow-lg">
             <p className="text-sm text-slate-500">Coverage</p>
             <p className="mt-2 text-2xl font-bold text-slate-900">Accra & Beyond</p>
           </div>
         </section>
 
-        <section className="mb-8 overflow-hidden rounded-4xl border border-emerald-100 bg-white shadow-xl">
+        <section className="mb-8 overflow-hidden rounded-4xl border border-[#438608]/15 bg-white shadow-xl">
           <div className="grid gap-0 lg:grid-cols-[1.05fr_1.35fr]">
-            <div className="bg-[radial-gradient(circle_at_top_left,rgba(16,185,129,0.22),transparent_38%),linear-gradient(160deg,#064e3b_0%,#0f766e_60%,#164e63_100%)] p-6 text-white sm:p-8">
-              <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-sm font-semibold backdrop-blur">
-                <WandSparkles size={16} /> Affordability advisor
+            <div className="bg-[radial-gradient(circle_at_top_left,rgba(67,134,8,0.22),transparent_38%),linear-gradient(160deg,#438608_0%,#438619_100%)] p-6 text-white sm:p-8">
+              <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-sm font-semibold backdrop-blur transition-transform duration-300 hover:scale-105">
+                <LucideCreditCard size={16} /> Affordability advisor
+              </div>
+              <div className=' w-96 h-72'>
+                <DotLottieReact
+                  src="/animation3.lottie"
+                  loop
+                  autoplay
+                  className='w-96 h-72'
+                />
               </div>
               <h2 className="mt-5 text-3xl font-bold leading-tight sm:text-4xl">See what fits before you fall in love with a listing.</h2>
-              <p className="mt-4 max-w-xl text-sm leading-7 text-emerald-50 sm:text-base">
+              <p className="mt-4 max-w-xl text-sm leading-7 text-white/85 sm:text-base">
                 Run a fast budget check instantly, then ask the AI advisor to match your income, preferred locations, and housing goals against live PrimeNest listings.
               </p>
 
               <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                <div className="rounded-3xl border border-white/15 bg-white/10 p-4 backdrop-blur">
-                  <p className="text-sm text-emerald-50">Instant guidance</p>
+                <div className="rounded-3xl border border-white/15 bg-white/10 p-4 backdrop-blur transition-transform duration-300 hover:-translate-y-1">
+                  <p className="text-sm text-white/80">Instant guidance</p>
                   <p className="mt-2 text-xl font-semibold">Quick calculator</p>
-                  <p className="mt-2 text-sm text-emerald-100">Live budget range with advance-payment estimates tuned for Ghana’s rental market.</p>
+                  <p className="mt-2 text-sm text-white/75">Live budget range with advance-payment estimates tuned for Ghana’s rental market.</p>
                 </div>
-                <div className="rounded-3xl border border-white/15 bg-white/10 p-4 backdrop-blur">
-                  <p className="text-sm text-emerald-50">AI recommendation</p>
+                <div className="rounded-3xl border border-white/15 bg-white/10 p-4 backdrop-blur transition-transform duration-300 hover:-translate-y-1">
+                  <p className="text-sm text-white/80">AI recommendation</p>
                   <p className="mt-2 text-xl font-semibold">Location-aware analysis</p>
-                  <p className="mt-2 text-sm text-emerald-100">Friendly advice plus nearby location alternatives and matching inventory counts.</p>
+                  <p className="mt-2 text-sm text-white/75">Friendly advice plus nearby location alternatives and matching inventory counts.</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-[linear-gradient(180deg,#fcfffd_0%,#f5fbf8_100%)] p-6 sm:p-8">
+            <div className="bg-[linear-gradient(180deg,rgba(67,134,8,0.03)_0%,rgba(67,134,25,0.07)_100%)] p-6 sm:p-8">
               {isTenantLoggedIn ? (
                 <div className="space-y-6">
                   <div className="grid gap-6 xl:grid-cols-[0.92fr_1.08fr]">
-                    <div className="rounded-[1.75rem] border border-emerald-100 bg-white p-5 shadow-sm">
+                    <div className="rounded-[1.75rem] border border-[#438608]/15 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
                       <div className="flex items-center justify-between gap-3">
                         <div>
-                          <p className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-700">
+                          <p className="inline-flex items-center gap-2 text-sm font-semibold text-[#438608]">
                             <Calculator size={16} /> Quick calculate
                           </p>
                           <h3 className="mt-2 text-xl font-semibold text-slate-900">Live monthly budget guide</h3>
                         </div>
-                        {quickLoading ? <LoaderCircle className="animate-spin text-emerald-600" size={18} /> : null}
+                        {quickLoading ? <LoaderCircle className="animate-spin text-[#438608]" size={18} /> : null}
                       </div>
 
                       <div className="mt-5 space-y-4">
@@ -369,7 +381,7 @@ export default function Listings() {
                             name="income"
                             value={quickForm.income}
                             onChange={handleQuickChange}
-                            className="w-full accent-emerald-600"
+                            className="w-full accent-[#438608]"
                           />
                           <input
                             type="number"
@@ -377,7 +389,7 @@ export default function Listings() {
                             name="income"
                             value={quickForm.income}
                             onChange={handleQuickChange}
-                            className="mt-3 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500"
+                            className="mt-3 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition-colors focus:border-[#438608]"
                           />
                         </label>
 
@@ -387,7 +399,7 @@ export default function Listings() {
                             name="advanceMonths"
                             value={quickForm.advanceMonths}
                             onChange={handleQuickChange}
-                            className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500"
+                            className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition-colors focus:border-[#438608]"
                           >
                             <option value="6">6 months</option>
                             <option value="12">12 months</option>
@@ -421,7 +433,7 @@ export default function Listings() {
                             </div>
                           </div>
 
-                          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">
+                          <div className="rounded-2xl border border-[#438608]/20 bg-[#438608]/10 p-4 text-sm text-[#2f5e07] transition-colors duration-300">
                             For your selected {quickAdvanceMonths}-month advance, plan for about <span className="font-semibold">{formatCurrency(selectedAdvanceCost || 0)}</span> upfront.
                           </div>
                         </div>
@@ -432,10 +444,10 @@ export default function Listings() {
                       )}
                     </div>
 
-                    <div className="rounded-[1.75rem] border border-emerald-100 bg-white p-5 shadow-sm">
+                    <div className="rounded-[1.75rem] border border-[#438608]/15 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
                       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                         <div>
-                          <p className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-700">
+                          <p className="inline-flex items-center gap-2 text-sm font-semibold text-[#438608]">
                             <BrainCircuit size={16} /> AI affordability analysis
                           </p>
                           <h3 className="mt-2 text-xl font-semibold text-slate-900">Get a personalised recommendation</h3>
@@ -460,7 +472,7 @@ export default function Listings() {
                               value={analysisForm.monthlyIncome}
                               onChange={handleAnalysisChange}
                               placeholder="5000"
-                              className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500"
+                              className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition-colors focus:border-[#438608]"
                             />
                           </label>
                           <label className="text-sm text-slate-600">
@@ -472,7 +484,7 @@ export default function Listings() {
                               value={analysisForm.totalBudget}
                               onChange={handleAnalysisChange}
                               placeholder="60000"
-                              className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500"
+                              className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition-colors focus:border-[#438608]"
                             />
                           </label>
                           <label className="text-sm text-slate-600 md:col-span-2">
@@ -482,7 +494,7 @@ export default function Listings() {
                               value={analysisForm.preferredLocations}
                               onChange={handleAnalysisChange}
                               placeholder="Adenta, Madina, East Legon"
-                              className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500"
+                              className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition-colors focus:border-[#438608]"
                             />
                             <span className="mt-2 block text-xs text-slate-500">Separate up to 5 locations with commas. Current count: {preferredLocationCount}</span>
                           </label>
@@ -492,7 +504,7 @@ export default function Listings() {
                               name="listingType"
                               value={analysisForm.listingType}
                               onChange={handleAnalysisChange}
-                              className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500"
+                              className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition-colors focus:border-[#438608]"
                             >
                               <option value="rent">Rent</option>
                               <option value="sale">Sale</option>
@@ -505,7 +517,7 @@ export default function Listings() {
                               name="advanceMonths"
                               value={analysisForm.advanceMonths}
                               onChange={handleAnalysisChange}
-                              className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500"
+                              className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition-colors focus:border-[#438608]"
                             >
                               <option value="6">6 months</option>
                               <option value="12">12 months</option>
@@ -522,7 +534,7 @@ export default function Listings() {
                               value={analysisForm.bedrooms}
                               onChange={handleAnalysisChange}
                               placeholder="2"
-                              className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500"
+                              className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition-colors focus:border-[#438608]"
                             />
                           </label>
                           <label className="text-sm text-slate-600">
@@ -532,7 +544,7 @@ export default function Listings() {
                               value={analysisForm.propertyTypes}
                               onChange={handleAnalysisChange}
                               placeholder="Apartment, house"
-                              className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500"
+                              className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition-colors focus:border-[#438608]"
                             />
                           </label>
                         </div>
@@ -540,7 +552,7 @@ export default function Listings() {
                         <button
                           type="submit"
                           disabled={analysisLoading}
-                          className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-emerald-600 px-4 py-3 font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-70"
+                          className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#438608] px-4 py-3 font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#3b7808] disabled:cursor-not-allowed disabled:opacity-70"
                         >
                           {analysisLoading ? <LoaderCircle className="animate-spin" size={18} /> : <BrainCircuit size={18} />}
                           Run affordability advisor
@@ -554,8 +566,8 @@ export default function Listings() {
                   ) : null}
 
                   {analysisResult ? (
-                    <div className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
-                      <div className="space-y-4 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm">
+                    <div className="grid gap-6 xl:grid-cols-1 2xl:grid-cols-2">
+                      <div className="space-y-4 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
                         <div className="flex flex-wrap items-center justify-between gap-3">
                           <div>
                             <p className="text-sm font-semibold text-slate-500">Financial summary</p>
@@ -594,18 +606,18 @@ export default function Listings() {
                           </div>
                         </div>
 
-                        <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-sm text-emerald-800">
+                        <div className="rounded-2xl border border-[#438608]/15 bg-[#438608]/10 p-4 text-sm text-[#2f5e07]">
                           Housing would take about <span className="font-semibold">{analysisResult.financialSummary.affordabilityScore.ratio}%</span> of your income at the recommended ceiling. {analysisResult.financialSummary.affordabilityScore.description}.
                         </div>
                       </div>
 
-                      <div className="space-y-4 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm">
+                      <div className="space-y-4 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
                         <div>
                           <p className="text-sm font-semibold text-slate-500">AI recommendation</p>
                           <h3 className="mt-1 text-2xl font-semibold text-slate-900">Where to focus your search next</h3>
                         </div>
 
-                        <div className="rounded-3xl border border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] p-5 text-sm leading-7 text-slate-700">
+                        <div className="rounded-3xl border border-[#438608]/15 bg-[linear-gradient(180deg,rgba(67,134,8,0.03)_0%,rgba(67,134,25,0.08)_100%)] p-5 text-sm leading-7 text-slate-700">
                           {analysisResult.recommendation}
                         </div>
 
@@ -639,11 +651,11 @@ export default function Listings() {
                                         <Link
                                           key={`${group.location}-${sample._id || sample.title}`}
                                           to={sample._id ? `/listings/${sample._id}` : "/listings"}
-                                          className="rounded-2xl bg-slate-50 p-3 transition hover:bg-emerald-50"
+                                          className="rounded-2xl bg-slate-50 p-3 transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#438608]/10"
                                         >
                                           <p className="font-medium text-slate-900">{sample.title}</p>
                                           <p className="mt-1 text-sm text-slate-500">{sample.propertyType || "Property"} • {sample.bedrooms || 0} bed</p>
-                                          <p className="mt-2 text-sm font-semibold text-emerald-700">{formatCurrency(sample.price)}</p>
+                                          <p className="mt-2 text-sm font-semibold text-[#438608]">{formatCurrency(sample.price)}</p>
                                         </Link>
                                       ))}
                                     </div>
@@ -663,7 +675,7 @@ export default function Listings() {
                         {analysisResult.matchingSummary.alternativeSuggestions.length > 0 ? (
                           <div className="flex flex-wrap gap-2">
                             {analysisResult.matchingSummary.alternativeSuggestions.map((item) => (
-                              <span key={item.location} className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700">
+                              <span key={item.location} className="rounded-full border border-[#438608]/20 bg-[#438608]/10 px-3 py-2 text-sm font-medium text-[#438608] transition-transform duration-300 hover:-translate-y-0.5">
                                 {item.location} • {item.count} options
                               </span>
                             ))}
@@ -674,7 +686,7 @@ export default function Listings() {
                   ) : null}
                 </div>
               ) : (
-                <div className="flex h-full flex-col justify-center rounded-[1.75rem] border border-dashed border-slate-300 bg-white p-6 text-center sm:p-8">
+                <div className="flex h-full flex-col justify-center rounded-[1.75rem] border border-dashed border-[#438608]/20 bg-white p-6 text-center sm:p-8">
                   <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-slate-600">
                     <Lock size={24} />
                   </div>
@@ -683,7 +695,7 @@ export default function Listings() {
                     Sign in with a tenant account to unlock the quick calculator and AI affordability recommendation directly from the listings page.
                   </p>
                   <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
-                    <Link to="/login" className="rounded-full bg-emerald-600 px-5 py-3 font-semibold text-white transition hover:bg-emerald-700">
+                    <Link to="/login" className="rounded-full bg-[#438608] px-5 py-3 font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#3b7808]">
                       Sign in as tenant
                     </Link>
                     <Link to="/register" className="rounded-full border border-slate-200 px-5 py-3 font-semibold text-slate-700 transition hover:bg-slate-50">
@@ -701,9 +713,9 @@ export default function Listings() {
           </div>
         </section>
 
-        <form onSubmit={handleSubmit} className="mb-8 rounded-4xl border border-emerald-100 bg-white/90 p-4 shadow-lg sm:p-6">
+        <form onSubmit={handleSubmit} className="mb-8 rounded-4xl border border-[#438608]/15 bg-white/90 p-4 shadow-lg transition-all duration-300 hover:shadow-xl sm:p-6">
           <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-2 text-emerald-700">
+            <div className="flex items-center gap-2 text-[#438608]">
               <SlidersHorizontal size={18} />
               <h2 className="text-lg font-semibold text-slate-900">Search & refine listings</h2>
             </div>
@@ -711,7 +723,7 @@ export default function Listings() {
               <button
                 type="button"
                 onClick={handleUseMyLocation}
-                className="inline-flex items-center gap-2 rounded-full border border-emerald-200 px-3 py-2 text-sm font-medium text-emerald-700 transition hover:bg-emerald-50"
+                className="inline-flex items-center gap-2 rounded-full border border-[#438608]/20 px-3 py-2 text-sm font-medium text-[#438608] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#438608]/10"
               >
                 <MapPin size={15} />
                 Use my location
@@ -764,13 +776,16 @@ export default function Listings() {
 
             <label className="rounded-2xl border border-slate-200 p-3 text-sm text-slate-600">
               <span className="mb-2 block font-medium text-slate-700">Category</span>
-              <input
-                name="propertyType"
-                value={filters.propertyType}
-                onChange={handleChange}
-                placeholder="Apartment, house, office"
-                className="w-full border-none bg-transparent p-0 outline-none"
-              />
+              <select name="propertyType" value={filters.propertyType} onChange={handleChange} className="w-full border-none bg-transparent p-0 outline-none">
+                <option value="">All</option>
+                <option value="apartment">Apartment</option>
+                <option value="house">House</option>
+                <option value="office">Office</option>
+                <option value="mansion">Mansion</option>
+                <option value="townhouse">Townhouse</option>
+                <option value="duplex">Duplex</option>
+              </select>
+
             </label>
 
             <label className="rounded-2xl border border-slate-200 p-3 text-sm text-slate-600">
@@ -838,89 +853,97 @@ export default function Listings() {
                 value={searchName}
                 onChange={(event) => setSearchName(event.target.value)}
                 placeholder="Name this search"
-                className="rounded-full border border-slate-200 px-3 py-2 text-sm outline-none focus:border-emerald-500"
+                className="rounded-full border border-slate-200 px-3 py-2 text-sm outline-none transition-colors focus:border-[#438608]"
               />
-              <button type="button" onClick={handleSaveSearch} className="inline-flex items-center gap-2 rounded-full border border-emerald-200 px-3 py-2 font-semibold text-emerald-700 transition hover:bg-emerald-50">
+              <button type="button" onClick={handleSaveSearch} className="inline-flex items-center gap-2 rounded-full border border-[#438608]/20 px-3 py-2 font-semibold text-[#438608] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#438608]/10">
                 <BookmarkPlus size={15} /> Save search
               </button>
-              <button type="submit" className="rounded-full bg-emerald-600 px-4 py-2 font-semibold text-white transition hover:bg-emerald-700">
+              <button type="submit" className="rounded-full bg-[#438608] px-4 py-2 font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#3b7808]">
                 Apply filters
               </button>
             </div>
           </div>
 
-          {searchMessage ? <p className="mt-3 text-sm text-emerald-700">{searchMessage}</p> : null}
-      
-    </form>
+          {searchMessage ? <p className="mt-3 text-sm text-[#438608]">{searchMessage}</p> : null}
+
+        </form>
 
         {
-    error ? (
-      <div className="mb-6 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">{error}</div>
-    ) : null
-  }
+          error ? (
+            <div className="mb-6 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">{error}</div>
+          ) : null
+        }
 
-  {
-    loading ? (
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-        {Array.from({ length: 6 }).map((_, index) => (
-          <div key={index} className="h-80 animate-pulse rounded-4xl border border-slate-200 bg-slate-100" />
-        ))}
-      </div>
-    ) : listings.length === 0 ? (
-      <div className="rounded-4xl border border-dashed border-slate-300 bg-white/70 p-10 text-center text-slate-600 shadow-sm">
-        <p className="text-lg font-semibold text-slate-900">No properties matched your search yet.</p>
-        <p className="mt-2">Try a broader location or clear a few filters to explore more homes.</p>
-      </div>
-    ) : (
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-        {listings.map((listing) => {
-          const image =
-            listing.media?.find((item) => item.type === "photo" && item.url)?.url ||
-            listing.image ||
-            "https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=900&q=80";
+        {
+          loading ? (
+            <div
 
-          return (
-            <Link
-              key={listing._id}
-              to={`/listings/${listing._id || listing.slug}`}
-              className="group overflow-hidden rounded-4xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
-            >
-              <div className="relative h-56 overflow-hidden">
-                <img src={image} alt={listing.title} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
-                <div className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-sm font-semibold text-emerald-700">
-                  {listing.listingType === "sale" ? "For Sale" : "For Rent"}
-                </div>
-              </div>
+              className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <div key={index}
+                  className="h-80 animate-pulse rounded-4xl border border-slate-200 bg-slate-100" />
+              ))}
+            </div>
+          ) : listings.length === 0 ? (
+            <div className="rounded-4xl border border-dashed border-slate-300 bg-white/70 p-10 text-center text-slate-600 shadow-sm">
+              <p className="text-lg font-semibold text-slate-900">No properties matched your search yet.</p>
+              <p className="mt-2">Try a broader location or clear a few filters to explore more homes.</p>
+            </div>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: false, amount: 0.2 }}
+              className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+              {listings.map((listing) => {
+                const image =
+                  listing.media?.find((item) => item.type === "photo" && item.url)?.url ||
+                  listing.image ||
+                  "https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=900&q=80";
 
-              <div className="space-y-3 p-5">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <h2 className="text-xl font-semibold text-slate-900">{listing.title}</h2>
-                    <p className="mt-1 flex items-center gap-1 text-sm text-slate-500">
-                      <MapPin size={14} />
-                      {listing.location?.neighborhood || listing.location?.city || "Prime location"}
-                    </p>
-                  </div>
-                  <div className="text-right text-lg font-bold text-emerald-600">{formatCurrency(listing.price)}</div>
-                </div>
+                return (
+                  <Link
+                    key={listing._id}
+                    to={`/listings/${listing._id || listing.slug}`}
+                    className="group overflow-hidden rounded-4xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#438608]/20 hover:shadow-xl"
+                  >
+                    <div className="relative h-56 overflow-hidden">
+                      <img src={image} alt={listing.title} className="h-full w-full object-cover transition duration-700 ease-out group-hover:scale-110" />
+                      <div className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-sm font-semibold text-[#438608] transition-transform duration-300 group-hover:scale-105">
+                        {listing.listingType === "sale" ? "For Sale" : "For Rent"}
+                      </div>
+                    </div>
 
-                <p className="text-sm leading-6 text-slate-600 line-clamp-3">{listing.description}</p>
+                    <div className="space-y-3 p-5">
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <h2 className="text-xl font-semibold text-slate-900">{listing.title}</h2>
+                          <p className="mt-1 flex items-center gap-1 text-sm text-slate-500">
+                            <MapPin size={14} />
+                            {listing.location?.neighborhood || listing.location?.city || "Prime location"}
+                          </p>
+                        </div>
+                        <div className="text-right text-lg font-bold text-[#438608] transition-transform duration-300 group-hover:-translate-y-0.5">{formatCurrency(listing.price)}</div>
+                      </div>
 
-                <div className="flex items-center gap-4 text-sm text-slate-600">
-                  <span className="flex items-center gap-1">
-                    <BedDouble size={14} /> {listing.bedrooms || 2} bed
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Bath size={14} /> {listing.bathrooms || 2} bath
-                  </span>
-                </div>
-              </div>
-            </Link>
-          );
-        })}
-      </div>
-    )
-  }
+                      <p className="text-sm leading-6 text-slate-600 line-clamp-3">{listing.description}</p>
+
+                      <div className="flex items-center gap-4 text-sm text-slate-600">
+                        <span className="flex items-center gap-1">
+                          <BedDouble size={14} /> {listing.bedrooms || 2} bed
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Bath size={14} /> {listing.bathrooms || 2} bath
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </motion.div>
+          )
+        }
       </div >
     </div >
   );

@@ -181,7 +181,7 @@ export default function AdminOverview({ onNavigate }) {
                     </span>
                   </div>
                   <p className="mt-1 text-slate-500">
-                    {t.agent?.firstName} {t.agent?.lastName} → {t.buyer?.firstName} {t.buyer?.lastName} · {formatCurrency(t.amount)}
+                    {t.agent?.firstName} {t.agent?.lastName} → {t.buyer ? `${t.buyer.firstName} ${t.buyer.lastName}` : t.buyerName} · {formatCurrency(t.amount)}
                   </p>
                   <p className="mt-1 text-xs text-slate-400">{formatDate(t.dealDate)}</p>
                 </div>

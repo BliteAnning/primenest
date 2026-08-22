@@ -11,7 +11,8 @@ const severityStyles = {
 };
 
 const statusFilters = [
-  { value: "pending", label: "Pending" },
+  { value: "all_alerts", label: "All risk alerts" },
+  { value: "pending", label: "Pending disputes" },
   { value: "resolved_confirmed", label: "Resolved — confirmed" },
   { value: "resolved_dismissed", label: "Resolved — dismissed" },
 ];
@@ -20,12 +21,12 @@ const formatDate = (value) =>
   value ? new Date(value).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "—";
 
 export default function AdminRiskDisputes() {
-  const { getRiskDisputes, resolveDispute } = useContext(adminContext);
+  const { getRiskDisputes, getAllRiskAlerts, resolveDispute } = useContext(adminContext);
 
   const [disputes, setDisputes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [statusFilter, setStatusFilter] = useState("pending");
+  const [statusFilter, setStatusFilter] = useState("all_alerts");
   const [activeRow, setActiveRow] = useState(null); // { listingId, alertId }
   const [adminNote, setAdminNote] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -34,15 +35,17 @@ export default function AdminRiskDisputes() {
     setLoading(true);
     setError("");
     try {
-      const result = await getRiskDisputes({ status: statusFilter, limit: 50 });
-      setDisputes(result?.data?.disputes || []);
+      const result = statusFilter === "all_alerts"
+        ? await getAllRiskAlerts({ limit: 50 })
+        : await getRiskDisputes({ status: statusFilter, limit: 50 });
+      setDisputes((statusFilter === "all_alerts" ? result?.data?.alerts : result?.data?.disputes) || []);
     } catch (err) {
       console.error(err);
-      setError("We could not load risk alert disputes right now.");
+      setError("We could not load risk alerts right now.");
     } finally {
       setLoading(false);
     }
-  }, [getRiskDisputes, statusFilter]);
+  }, [getRiskDisputes, getAllRiskAlerts, statusFilter]);
 
   useEffect(() => {
     loadDisputes();
@@ -95,7 +98,9 @@ export default function AdminRiskDisputes() {
         </div>
       ) : disputes.length === 0 ? (
         <div className="rounded-4xl border border-slate-200 bg-white p-10 text-center text-sm text-slate-500 shadow-sm">
-          No {statusFilter.replace(/_/g, " ")} disputes right now.
+          {statusFilter === "all_alerts"
+            ? "No listings with risk alerts right now."
+            : `No ${statusFilter.replace(/_/g, " ")} disputes right now.`}
         </div>
       ) : (
         <div className="space-y-4">
@@ -125,18 +130,24 @@ export default function AdminRiskDisputes() {
                 <p className="mt-2 text-xs text-slate-500">Flagged {formatDate(row.alert.flaggedAt)}</p>
               </div>
 
-              <div className="mt-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
-                <p className="font-semibold">Agent's dispute reason</p>
-                <p className="mt-1">{row.alert.disputeReason}</p>
-                {row.alert.disputeDocumentUrl ? (
-                  <a href={row.alert.disputeDocumentUrl} target="_blank" rel="noreferrer" className="mt-2 inline-block text-xs font-semibold text-amber-900 underline">
-                    View supporting document
-                  </a>
-                ) : null}
-                <p className="mt-2 text-xs text-amber-700">Disputed {formatDate(row.alert.disputedAt)}</p>
-              </div>
+              {row.alert.isDisputed ? (
+                <div className="mt-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+                  <p className="font-semibold">Agent's dispute reason</p>
+                  <p className="mt-1">{row.alert.disputeReason}</p>
+                  {row.alert.disputeDocumentUrl ? (
+                    <a href={row.alert.disputeDocumentUrl} target="_blank" rel="noreferrer" className="mt-2 inline-block text-xs font-semibold text-amber-900 underline">
+                      View supporting document
+                    </a>
+                  ) : null}
+                  <p className="mt-2 text-xs text-amber-700">Disputed {formatDate(row.alert.disputedAt)}</p>
+                </div>
+              ) : (
+                <div className="mt-3 rounded-2xl border border-slate-200 bg-slate-50 p-3 text-xs font-semibold text-slate-500">
+                  Not disputed by the agent.
+                </div>
+              )}
 
-              {row.alert.disputeStatus !== "pending" ? (
+              {!row.alert.isDisputed ? null : row.alert.disputeStatus !== "pending" ? (
                 <div className="mt-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm">
                   <p className="font-semibold text-slate-800">
                     {row.alert.disputeStatus === "resolved_confirmed" ? "Risk confirmed — alert kept" : "Dispute upheld — alert removed"}

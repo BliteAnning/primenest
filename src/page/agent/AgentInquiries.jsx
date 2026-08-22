@@ -119,7 +119,7 @@ export default function AgentInquiries() {
       <div className="flex flex-wrap items-center justify-between gap-4 rounded-4xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
         <div>
           <h2 className="flex items-center gap-2 text-xl font-semibold text-slate-900">
-            <Inbox size={20} className="text-emerald-600" /> Inquiries
+            <Inbox size={20} className="text-lime-600" /> Inquiries
           </h2>
           <p className="mt-1 text-sm text-slate-500">
             {counts.total} total • {counts.new || 0} awaiting your response
@@ -133,7 +133,7 @@ export default function AgentInquiries() {
               onClick={() => setStatusFilter(filter.value)}
               className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
                 statusFilter === filter.value
-                  ? "border-emerald-600 bg-emerald-600 text-white"
+                  ? "border-lime-600 bg-lime-600 text-white"
                   : "border-slate-200 text-slate-600 hover:bg-slate-50"
               }`}
             >
@@ -147,7 +147,7 @@ export default function AgentInquiries() {
 
       {loading ? (
         <div className="flex items-center justify-center rounded-4xl border border-slate-200 bg-white py-20 shadow-sm">
-          <Loader2 className="animate-spin text-emerald-600" size={32} />
+          <Loader2 className="animate-spin text-lime-600" size={32} />
         </div>
       ) : inquiries.length === 0 ? (
         <div className="rounded-4xl border border-dashed border-slate-300 bg-white/60 p-10 text-center text-sm text-slate-500">
@@ -183,9 +183,9 @@ export default function AgentInquiries() {
 
               {inquiry.response?.message ? (
                 <div className="mt-4 rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
-                  <p className="text-xs font-semibold uppercase text-emerald-700">Your response</p>
-                  <p className="mt-1 text-sm text-emerald-800">{inquiry.response.message}</p>
-                  <p className="mt-1 text-xs text-emerald-600">Sent {formatDate(inquiry.response.respondedAt)}</p>
+                  <p className="text-xs font-semibold uppercase text-lime-700">Your response</p>
+                  <p className="mt-1 text-sm text-lime-800">{inquiry.response.message}</p>
+                  <p className="mt-1 text-xs text-lime-600">Sent {formatDate(inquiry.response.respondedAt)}</p>
                 </div>
               ) : null}
 
@@ -205,7 +205,7 @@ export default function AgentInquiries() {
                           type="button"
                           onClick={() => handleRespond(inquiry._id)}
                           disabled={submittingId === inquiry._id}
-                          className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-60"
+                          className="inline-flex items-center gap-2 rounded-full bg-lime-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-lime-700 disabled:opacity-60"
                         >
                           {submittingId === inquiry._id ? <Loader2 size={15} className="animate-spin" /> : <MessageCircleReply size={15} />}
                           Send response
@@ -224,7 +224,7 @@ export default function AgentInquiries() {
                       <button
                         type="button"
                         onClick={() => openReply(inquiry)}
-                        className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700"
+                        className="inline-flex items-center gap-2 rounded-full bg-lime-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-lime-700"
                       >
                         <MessageCircleReply size={15} /> {inquiry.status === "responded" ? "Edit response" : "Respond"}
                       </button>

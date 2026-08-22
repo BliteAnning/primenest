@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ArrowRight, CheckCircle2, ChevronLeft, ChevronRight, Home, Sparkles, UserRound } from "lucide-react";
+import { ArrowRight, CheckCircle2, ChevronLeft, ChevronRight, Home, HomeIcon, Sparkles, UserRound } from "lucide-react";
 import { toast } from "react-hot-toast";
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import axiosInstance from "../axiosInstance";
 
 const defaultTenantForm = {
@@ -135,38 +136,38 @@ export default function Onboarding() {
       const payload =
         role === "agent"
           ? {
-              agentProfile: {
-                agencyName: formData.agencyName,
-                agencyAddress: formData.agencyAddress,
-                yearsOfExperience: Number(formData.yearsOfExperience) || undefined,
-                specializations: formData.specializations,
-                areasOfOperation: formData.areasOfOperation
-                  .split(",")
-                  .map((item) => item.trim())
-                  .filter(Boolean),
-                bio: formData.bio,
-                bankAccountName: formData.bankAccountName,
-                bankAccountNumber: formData.bankAccountNumber,
-                bankName: formData.bankName,
-              },
-            }
+            agentProfile: {
+              agencyName: formData.agencyName,
+              agencyAddress: formData.agencyAddress,
+              yearsOfExperience: Number(formData.yearsOfExperience) || undefined,
+              specializations: formData.specializations,
+              areasOfOperation: formData.areasOfOperation
+                .split(",")
+                .map((item) => item.trim())
+                .filter(Boolean),
+              bio: formData.bio,
+              bankAccountName: formData.bankAccountName,
+              bankAccountNumber: formData.bankAccountNumber,
+              bankName: formData.bankName,
+            },
+          }
           : {
-              tenantProfile: {
-                monthlyIncome: Number(formData.monthlyIncome) || undefined,
-                budgetMin: Number(formData.budgetMin) || undefined,
-                budgetMax: Number(formData.budgetMax) || undefined,
-                preferredLocations: formData.preferredLocations
-                  .split(",")
-                  .map((item) => item.trim())
-                  .filter(Boolean),
-                propertyTypePreference: formData.propertyTypePreference,
-                bedroomsNeeded: Number(formData.bedroomsNeeded) || undefined,
-                mustHaveAmenities: formData.mustHaveAmenities,
-                moveInTimeline: formData.moveInTimeline,
-                advancePaymentCapacity: Number(formData.advancePaymentCapacity) || undefined,
-                employmentStatus: formData.employmentStatus,
-              },
-            };
+            tenantProfile: {
+              monthlyIncome: Number(formData.monthlyIncome) || undefined,
+              budgetMin: Number(formData.budgetMin) || undefined,
+              budgetMax: Number(formData.budgetMax) || undefined,
+              preferredLocations: formData.preferredLocations
+                .split(",")
+                .map((item) => item.trim())
+                .filter(Boolean),
+              propertyTypePreference: formData.propertyTypePreference,
+              bedroomsNeeded: Number(formData.bedroomsNeeded) || undefined,
+              mustHaveAmenities: formData.mustHaveAmenities,
+              moveInTimeline: formData.moveInTimeline,
+              advancePaymentCapacity: Number(formData.advancePaymentCapacity) || undefined,
+              employmentStatus: formData.employmentStatus,
+            },
+          };
 
       const response = await axiosInstance.patch("/users/me/onboarding", payload);
 
@@ -199,9 +200,9 @@ export default function Onboarding() {
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(16,185,129,0.16),_transparent_40%),linear-gradient(135deg,#f5fff9_0%,#ffffff_45%,#ecfdf5_100%)] px-4 py-10 sm:px-6 lg:px-8">
       <div className="mx-auto flex max-w-6xl flex-col gap-8 lg:flex-row">
-        <div className="rounded-[2rem] border border-emerald-100 bg-white/80 p-8 shadow-2xl backdrop-blur lg:w-[42%]">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1 text-sm font-semibold text-emerald-700">
-            <Sparkles size={16} />
+        <div className="rounded-[2rem] border border-lime-100 bg-white/80 p-8 shadow-2xl backdrop-blur lg:w-[42%]">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-lime-100 px-3 py-1 text-sm font-semibold text-lime-700">
+            <HomeIcon size={16} />
             PrimeNest onboarding
           </div>
           <h1 className="text-4xl font-bold text-slate-900">
@@ -213,14 +214,22 @@ export default function Onboarding() {
               : "We will personalize property suggestions for your budget, location, and lifestyle."}
           </p>
 
-          <div className="mt-8 rounded-3xl bg-emerald-600 p-6 text-white">
+          <div className="mt-8 rounded-3xl bg-lime-600 p-6 text-white">
             <div className="mb-4 flex items-center gap-3">
               {role === "agent" ? <Home size={24} /> : <UserRound size={24} />}
               <h2 className="text-xl font-semibold">
                 {role === "agent" ? "Agent spotlight" : "Tenant profile"}
               </h2>
             </div>
-            <p className="text-sm leading-7 text-emerald-50">
+            <div className=' w-96 h-72'>
+              <DotLottieReact
+                src="/animation2.lottie"
+                loop
+                autoplay
+                className='w-96 h-72'
+              />
+            </div>
+            <p className="text-sm leading-7 text-lime-50">
               {role === "agent"
                 ? "Your professional details help agents and tenants connect with confidence."
                 : "Your answers help us recommend smarter homes and affordability-ready options."}
@@ -231,17 +240,17 @@ export default function Onboarding() {
         <div className="flex-1 rounded-[2rem] border border-slate-200 bg-white p-8 shadow-2xl">
           <div className="mb-6 flex items-center justify-between">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.3em] text-emerald-600">Step {step} of 3</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.3em] text-lime-600">Step {step} of 3</p>
               <h2 className="text-2xl font-semibold text-slate-900">{steps[step - 1]}</h2>
             </div>
-            <Link to="/" className="text-sm font-semibold text-emerald-600 hover:underline">
+            <Link to="/" className="text-sm font-semibold text-lime-600 hover:underline">
               Back home
             </Link>
           </div>
 
           <div className="mb-8 flex gap-2">
             {steps.map((title, index) => (
-              <div key={title} className={`h-2 flex-1 rounded-full ${index + 1 <= step ? "bg-emerald-600" : "bg-slate-200"}`} />
+              <div key={title} className={`h-2 flex-1 rounded-full ${index + 1 <= step ? "bg-lime-600" : "bg-slate-200"}`} />
             ))}
           </div>
 
@@ -259,7 +268,7 @@ export default function Onboarding() {
                           name="agencyName"
                           value={formData.agencyName}
                           onChange={handleChange}
-                          className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-emerald-500"
+                          className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-lime-500"
                         />
                       </label>
                       <label className="block text-sm font-medium text-slate-700">
@@ -269,7 +278,7 @@ export default function Onboarding() {
                           name="yearsOfExperience"
                           value={formData.yearsOfExperience}
                           onChange={handleChange}
-                          className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-emerald-500"
+                          className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-lime-500"
                         />
                       </label>
                     </div>
@@ -279,7 +288,7 @@ export default function Onboarding() {
                         name="agencyAddress"
                         value={formData.agencyAddress}
                         onChange={handleChange}
-                        className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-emerald-500"
+                        className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-lime-500"
                       />
                     </label>
                   </div>
@@ -297,7 +306,7 @@ export default function Onboarding() {
                               key={option.value}
                               type="button"
                               onClick={() => handleArrayToggle("specializations", option.value)}
-                              className={`rounded-full px-3 py-2 text-sm font-medium ${active ? "bg-emerald-600 text-white" : "bg-slate-100 text-slate-700"}`}
+                              className={`rounded-full px-3 py-2 text-sm font-medium ${active ? "bg-lime-600 text-white" : "bg-slate-100 text-slate-700"}`}
                             >
                               {option.label}
                             </button>
@@ -311,7 +320,7 @@ export default function Onboarding() {
                         name="areasOfOperation"
                         value={formData.areasOfOperation}
                         onChange={handleChange}
-                        className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-emerald-500"
+                        className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-lime-500"
                         placeholder="Accra, East Legon, Tema"
                       />
                     </label>
@@ -322,7 +331,7 @@ export default function Onboarding() {
                         rows="4"
                         value={formData.bio}
                         onChange={handleChange}
-                        className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-emerald-500"
+                        className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-lime-500"
                       />
                     </label>
                   </div>
@@ -352,7 +361,7 @@ export default function Onboarding() {
                           name="monthlyIncome"
                           value={formData.monthlyIncome}
                           onChange={handleChange}
-                          className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-emerald-500"
+                          className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-lime-500"
                         />
                       </label>
                       <label className="block text-sm font-medium text-slate-700">
@@ -362,7 +371,7 @@ export default function Onboarding() {
                           name="bedroomsNeeded"
                           value={formData.bedroomsNeeded}
                           onChange={handleChange}
-                          className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-emerald-500"
+                          className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-lime-500"
                         />
                       </label>
                     </div>
@@ -375,7 +384,7 @@ export default function Onboarding() {
                           name="budgetMin"
                           value={formData.budgetMin}
                           onChange={handleChange}
-                          className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-emerald-500"
+                          className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-lime-500"
                         />
                       </label>
                       <label className="block text-sm font-medium text-slate-700">
@@ -385,7 +394,7 @@ export default function Onboarding() {
                           name="budgetMax"
                           value={formData.budgetMax}
                           onChange={handleChange}
-                          className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-emerald-500"
+                          className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-lime-500"
                         />
                       </label>
                     </div>
@@ -396,7 +405,7 @@ export default function Onboarding() {
                         name="preferredLocations"
                         value={formData.preferredLocations}
                         onChange={handleChange}
-                        className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-emerald-500"
+                        className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-lime-500"
                         placeholder="Accra, Kumasi, Takoradi"
                       />
                     </label>
@@ -411,7 +420,7 @@ export default function Onboarding() {
                               key={option.value}
                               type="button"
                               onClick={() => handleArrayToggle("propertyTypePreference", option.value)}
-                              className={`rounded-full px-3 py-2 text-sm font-medium ${active ? "bg-emerald-600 text-white" : "bg-slate-100 text-slate-700"}`}
+                              className={`rounded-full px-3 py-2 text-sm font-medium ${active ? "bg-lime-600 text-white" : "bg-slate-100 text-slate-700"}`}
                             >
                               {option.label}
                             </button>
@@ -430,7 +439,7 @@ export default function Onboarding() {
                         name="moveInTimeline"
                         value={formData.moveInTimeline}
                         onChange={handleChange}
-                        className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-emerald-500"
+                        className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-lime-500"
                       >
                         {moveInTimelineOptions.map((option) => (
                           <option key={option.value} value={option.value}>{option.label}</option>
@@ -444,7 +453,7 @@ export default function Onboarding() {
                         name="employmentStatus"
                         value={formData.employmentStatus}
                         onChange={handleChange}
-                        className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-emerald-500"
+                        className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-lime-500"
                       >
                         {employmentStatusOptions.map((option) => (
                           <option key={option.value} value={option.value}>{option.label}</option>
@@ -459,7 +468,7 @@ export default function Onboarding() {
                         name="advancePaymentCapacity"
                         value={formData.advancePaymentCapacity}
                         onChange={handleChange}
-                        className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-emerald-500"
+                        className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-lime-500"
                       />
                     </label>
 
@@ -469,12 +478,12 @@ export default function Onboarding() {
                         {amenityOptions.map((option) => {
                           const active = formData.mustHaveAmenities.includes(option.value);
                           return (
-                            <label key={option.value} className={`flex cursor-pointer items-center gap-2 rounded-2xl border px-3 py-2 text-sm ${active ? "border-emerald-500 bg-emerald-50 text-emerald-700" : "border-slate-200 text-slate-700"}`}>
+                            <label key={option.value} className={`flex cursor-pointer items-center gap-2 rounded-2xl border px-3 py-2 text-sm ${active ? "border-lime-500 bg-lime-50 text-lime-700" : "border-slate-200 text-slate-700"}`}>
                               <input
                                 type="checkbox"
                                 checked={active}
                                 onChange={() => handleArrayToggle("mustHaveAmenities", option.value)}
-                                className="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                                className="h-4 w-4 rounded border-slate-300 text-lime-600 focus:ring-lime-500"
                               />
                               {option.label}
                             </label>
@@ -518,7 +527,7 @@ export default function Onboarding() {
                 <button
                   type="button"
                   onClick={goNext}
-                  className="inline-flex items-center justify-center gap-2 rounded-full bg-emerald-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-lime-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-lime-700"
                 >
                   Next
                   <ChevronRight size={16} />
@@ -527,7 +536,7 @@ export default function Onboarding() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="inline-flex items-center justify-center gap-2 rounded-full bg-emerald-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-70"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-lime-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-lime-700 disabled:cursor-not-allowed disabled:opacity-70"
                 >
                   {loading ? "Saving..." : "Save profile"}
                   <ArrowRight size={16} />

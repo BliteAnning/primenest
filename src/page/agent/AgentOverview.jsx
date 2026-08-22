@@ -101,11 +101,11 @@ export default function AgentOverview({ user, onNavigate }) {
           type="button"
           onClick={() => onNavigate("add-listing")}
           disabled={!user.isActive}
-          className="flex flex-col items-start justify-center gap-2 rounded-3xl border border-dashed border-emerald-300 bg-emerald-50 p-5 text-left text-emerald-700 transition hover:bg-emerald-100 disabled:cursor-not-allowed disabled:opacity-60"
+          className="flex flex-col items-start justify-center gap-2 rounded-3xl border border-dashed border-lime-300 bg-lime-50 p-5 text-left text-lime-700 transition hover:bg-lime-100 disabled:cursor-not-allowed disabled:opacity-60"
         >
           <PlusCircle size={20} />
           <span className="font-semibold">Add a new listing</span>
-          {!user.isActive ? <span className="text-xs text-emerald-700/80">Available once your account is approved</span> : null}
+          {!user.isActive ? <span className="text-xs text-lime-700/80">Available once your account is approved</span> : null}
         </button>
       </div>
 

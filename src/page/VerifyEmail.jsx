@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { CheckCircle2, LoaderCircle, XCircle } from 'lucide-react';
 import { toast } from 'react-hot-toast';
@@ -9,6 +9,7 @@ export default function VerifyEmail() {
   const navigate = useNavigate();
   const [status, setStatus] = useState('verifying');
   const [message, setMessage] = useState('Verifying your email address...');
+  const requestedTokenRef = useRef(null);
 
   useEffect(() => {
     const verify = async () => {
@@ -17,6 +18,10 @@ export default function VerifyEmail() {
         setMessage('Verification link is missing.');
         return;
       }
+
+      // Avoid firing the request twice for the same token (e.g. StrictMode re-run in dev).
+      if (requestedTokenRef.current === token) return;
+      requestedTokenRef.current = token;
 
       try {
         const response = await axiosInstance.get(`/users/verify-email/${token}`);
@@ -38,7 +43,7 @@ export default function VerifyEmail() {
           throw new Error(response.data?.message || 'Verification failed');
         }
       } catch (error) {
-        console.error(error);
+        console.log(error);
         setStatus('error');
         setMessage(error?.response?.data?.message || 'We could not verify your email. The link may be expired or invalid.');
         toast.error('Verification failed. Please request a new link.');

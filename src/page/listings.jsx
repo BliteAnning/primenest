@@ -322,7 +322,7 @@ export default function Listings() {
           </div>
         </section>
 
-        <section className="mb-8 overflow-hidden rounded-4xl border border-[#438608]/15 bg-white shadow-xl">
+        <section className="mb-8 overflow-x-auto rounded-4xl border border-[#438608]/15 bg-white shadow-xl">
           <div className="grid gap-0 lg:grid-cols-[1.05fr_1.35fr]">
             <div className="bg-[radial-gradient(circle_at_top_left,rgba(67,134,8,0.22),transparent_38%),linear-gradient(160deg,#438608_0%,#438619_100%)] p-6 text-white sm:p-8">
               <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-sm font-semibold backdrop-blur transition-transform duration-300 hover:scale-105">
@@ -336,8 +336,8 @@ export default function Listings() {
                   className='w-96 h-72'
                 />
               </div>
-              <h2 className="mt-5 text-3xl font-bold leading-tight sm:text-4xl">See what fits before you fall in love with a listing.</h2>
-              <p className="mt-4 max-w-xl text-sm leading-7 text-white/85 sm:text-base">
+              <h2 className="mt-5 text-2xl font-bold leading-tight sm:text-4xl">See what fits before you fall in love with a listing.</h2>
+              <p className="mt-4 max-w-xl text-xs leading-7 text-white/85 sm:text-base">
                 Run a fast budget check instantly, then ask the AI advisor to match your income, preferred locations, and housing goals against live PrimeNest listings.
               </p>
 
@@ -348,14 +348,14 @@ export default function Listings() {
                   <p className="mt-2 text-sm text-white/75">Live budget range with advance-payment estimates tuned for Ghana’s rental market.</p>
                 </div>
                 <div className="rounded-3xl border border-white/15 bg-white/10 p-4 backdrop-blur transition-transform duration-300 hover:-translate-y-1">
-                  <p className="text-sm text-white/80">AI recommendation</p>
-                  <p className="mt-2 text-xl font-semibold">Location-aware analysis</p>
-                  <p className="mt-2 text-sm text-white/75">Friendly advice plus nearby location alternatives and matching inventory counts.</p>
+                  <p className=" text-xs sm:text-sm text-white/80">AI recommendation</p>
+                  <p className="mt-2 text-sm sm:text-xl font-semibold">Location-aware analysis</p>
+                  <p className="mt-2 text-xs sm:text-sm text-white/75">Friendly advice plus nearby location alternatives and matching inventory counts.</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-[linear-gradient(180deg,rgba(67,134,8,0.03)_0%,rgba(67,134,25,0.07)_100%)] p-6 sm:p-8">
+            <div className="bg-[linear-gradient(180deg,rgba(67,134,8,0.03)_0%,rgba(67,134,25,0.07)_100%)] p-3 sm:p-8">
               {isTenantLoggedIn ? (
                 <div className="space-y-6">
                   <div className="grid gap-6 xl:grid-cols-[0.92fr_1.08fr]">
@@ -414,7 +414,7 @@ export default function Listings() {
                         <div className="mt-5 space-y-3">
                           <div className="rounded-3xl bg-slate-900 p-4 text-white">
                             <p className="text-sm text-slate-300">Recommended monthly rent</p>
-                            <p className="mt-2 text-3xl font-bold">{formatCurrency(quickResult.recommendedBudget.min)} - {formatCurrency(quickResult.recommendedBudget.max)}</p>
+                            <p className="mt-2 text-lg sm:text-3xl font-bold">{formatCurrency(quickResult.recommendedBudget.min)} - {formatCurrency(quickResult.recommendedBudget.max)}</p>
                             <p className="mt-2 text-sm text-slate-300">Stretch ceiling: {formatCurrency(quickResult.stretchBudget.max)}</p>
                           </div>
 
@@ -450,7 +450,7 @@ export default function Listings() {
                           <p className="inline-flex items-center gap-2 text-sm font-semibold text-[#438608]">
                             <BrainCircuit size={16} /> AI affordability analysis
                           </p>
-                          <h3 className="mt-2 text-xl font-semibold text-slate-900">Get a personalised recommendation</h3>
+                          <h3 className="mt-2 text-lg sm:text-xl font-semibold text-slate-900">Get a personalised recommendation</h3>
                         </div>
                         <button
                           type="button"

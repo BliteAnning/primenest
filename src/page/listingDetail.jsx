@@ -204,7 +204,7 @@ export default function ListingDetail() {
 
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <h1 className="text-3xl font-bold text-slate-900">{listing.title}</h1>
+                  <h1 className="sm:text-3xl text-xl font-bold text-slate-900">{listing.title}</h1>
                   <p className="mt-3 flex items-center gap-2 text-slate-500">
                     <MapPin size={16} />
                     {listing.location?.neighborhood || listing.location?.city || "Prime location"}
@@ -214,7 +214,7 @@ export default function ListingDetail() {
                   type="button"
                   onClick={handleSaveToggle}
                   disabled={saving}
-                  className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition ${
+                  className={`inline-flex items-center gap-2 rounded-full px-4 py-2 sm:text-sm text-xs font-semibold transition ${
                     isSaved ? "bg-[#438608] text-white shadow-lg shadow-[#438608]/20" : "border border-[#438608]/20 bg-[#438608]/10 text-[#438608]"
                   } ${saving ? "opacity-70" : "hover:-translate-y-0.5 hover:brightness-95"}`}
                 >
@@ -250,7 +250,7 @@ export default function ListingDetail() {
 
               <div className="mt-8 rounded-3xl bg-slate-50 p-5">
                 <h2 className="text-lg font-semibold text-slate-900">Overview</h2>
-                <p className="mt-3 leading-7 text-slate-600">{listing.description}</p>
+                <p className="mt-3 leading-7 text-xs sm:text-sm text-slate-600">{listing.description}</p>
               </div>
             </div>
           </div>
@@ -262,7 +262,7 @@ export default function ListingDetail() {
                   <div className="inline-flex items-center gap-2 rounded-full bg-[#438608]/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-[#438608] motion-safe:animate-pulse">
                     <Sparkles size={14} /> New · AI powered
                   </div>
-                  <h3 className="mt-3 text-xl font-bold text-slate-900">See this space redesigned in your style</h3>
+                  <h3 className="mt-3 sm:text-xl text-lg font-bold text-slate-900">See this space redesigned in your style</h3>
                   <p className="mt-1 max-w-xl text-sm text-slate-600">
                     Use AI Renovation Vision to preview a modern, luxury, or Afrocentric makeover of any photo — complete
                     with a Ghana-specific cost estimate.

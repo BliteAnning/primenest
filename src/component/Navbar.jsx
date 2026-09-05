@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { HouseIcon } from 'lucide-react';
+import { HouseIcon, Menu, X } from 'lucide-react';
 
 const Navbar = () => {
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const token = localStorage.getItem('token');
     const storedUser = (() => {
         try {
@@ -18,6 +20,30 @@ const Navbar = () => {
         localStorage.removeItem('primenestUser');
         window.location.href = '/login';
     }
+    const closeMenu = () => setIsMenuOpen(false);
+
+    const navLinks = token && userRole === 'tenant' ? (
+        <>
+            <a href="/" onClick={closeMenu} className="transition hover:text-lime-600">Home</a>
+            <a href="/listings" onClick={closeMenu} className="transition hover:text-lime-600">Explore</a>
+            <a href="/my-dashboard-t" onClick={closeMenu} className="transition hover:text-lime-600">Dashboard</a>
+        </>
+    ) : token && userRole === 'agent' ? (
+        <>
+            <a href="/my-dashboard-a" onClick={closeMenu} className="transition hover:text-lime-600">Dashboard</a>
+        </>
+    ) : token && userRole === 'admin' ? (
+        <>
+            <a href="/admin-dashboard" onClick={closeMenu} className="transition hover:text-lime-600">Admin Dashboard</a>
+        </>
+    ) : (
+        <>
+            <a href="/" onClick={closeMenu} className="transition hover:text-lime-600">Home</a>
+            <a href="/listings" onClick={closeMenu} className="transition hover:text-lime-600">Explore</a>
+            <a href="/login" onClick={closeMenu} className="transition hover:text-lime-600">Login</a>
+        </>
+    );
+
     return (
         <nav className="sticky top-0 z-50 border-b border-lime-100 bg-white/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 lg:px-8">
@@ -30,31 +56,7 @@ const Navbar = () => {
           </div>
           <div className="hidden items-center gap-7 text-sm font-medium text-slate-700 md:flex">
             
-            {
-              token && userRole === 'tenant' ? (
-                <>
-                  <a href="/" className="transition hover:text-lime-600">Home</a>
-                  <a href="/listings" className="transition hover:text-lime-600">Explore</a>
-                  <a href="/my-dashboard-t" className="transition hover:text-lime-600">Dashboard</a>
-                </>
-              ) : token && userRole === 'agent' ? (
-                <>
-                  <a href="/my-dashboard-a" className="transition hover:text-lime-600">Dashboard</a>
-                </>
-              ) : token && userRole === 'admin' ? (
-                <>
-                  <a href="/admin-dashboard" className="transition hover:text-lime-600">Admin Dashboard</a>
-                </>
-              ) : (
-                <>
-                  <a href="/" className="transition hover:text-lime-600">Home</a>
-                  <a href="/listings" className="transition hover:text-lime-600">Explore</a>
-                  <a href="/login" className="transition hover:text-lime-600">Login</a>
-
-                </>
-              )
-
-              }
+            {navLinks}
             
             
            {/* {token ? (
@@ -69,7 +71,34 @@ const Navbar = () => {
               </button>
             )}
           </div>
+
+          <button
+            type="button"
+            onClick={() => setIsMenuOpen((prev) => !prev)}
+            className="inline-flex items-center justify-center rounded-md p-2 text-slate-700 transition hover:text-lime-600 md:hidden"
+            aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={isMenuOpen}
+          >
+            {isMenuOpen ? <X size={26} /> : <Menu size={26} />}
+          </button>
         </div>
+
+        {isMenuOpen && (
+          <div className="border-t border-lime-100 bg-white px-6 py-5 md:hidden">
+            <div className="flex flex-col items-start gap-5 text-sm font-medium text-slate-700">
+              {navLinks}
+
+              {token && (
+                <button
+                  onClick={() => { handleLogout(); closeMenu(); }}
+                  className="rounded-full bg-lime-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-lime-700"
+                >
+                  Logout
+                </button>
+              )}
+            </div>
+          </div>
+        )}
       </nav>
     );
 }

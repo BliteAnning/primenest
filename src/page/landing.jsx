@@ -44,7 +44,7 @@ export default function Home() {
         <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1.1fr_0.9fr]">
           <div>
 
-            <div ref={typingRef} className="text-5xl font-black leading-tight text-slate-100 sm:text-6xl">
+            <div ref={typingRef} className="text-3xl font-black leading-tight text-slate-100 sm:text-6xl">
               <h1>
                 {isInView ? (
                   <Typewriter
@@ -63,7 +63,7 @@ export default function Home() {
                             </span>}
               </h1>
             </div>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-200">
+            <p className="mt-6 max-w-2xl text-sm sm:text-lg leading-8 text-slate-200">
               PrimeNest helps tenants and buyers discover beautiful homes, compare affordability, and move forward with confidence in a modern property marketplace.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -74,7 +74,7 @@ export default function Home() {
                 Browse listings
               </Link>
             </div>
-            <div className="mt-8 flex flex-wrap gap-4 text-sm text-slate-600">
+            <div className="mt-8 flex flex-wrap gap-4 text-xs sm:text-sm text-slate-600">
               <div className="rounded-2xl border border-slate-200 bg-white/80 px-4 py-3 shadow-sm">🏠 5000+ curated homes</div>
               <div className="rounded-2xl border border-slate-200 bg-white/80 px-4 py-3 shadow-sm">🤖 AI-driven affordability</div>
               <div className="rounded-2xl border border-slate-200 bg-white/80 px-4 py-3 shadow-sm">🔒 Trusted listings</div>

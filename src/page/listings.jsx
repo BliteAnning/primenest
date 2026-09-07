@@ -890,12 +890,9 @@ export default function Listings() {
               <p className="mt-2">Try a broader location or clear a few filters to explore more homes.</p>
             </div>
           ) : (
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              viewport={{ once: false, amount: 0.2 }}
-              className="grid gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+            <div
+              
+              className="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
               {listings.map((listing) => {
                 const image =
                   listing.media?.find((item) => item.type === "photo" && item.url)?.url ||
@@ -929,7 +926,7 @@ export default function Listings() {
 
                       <p className="sm:text-sm text-xs leading-6 text-slate-600 line-clamp-3">{listing.description}</p>
 
-                      <div className="flex items-center gap-4 text-xs sm:text-sm text-slate-600">
+                      <div className="flex items-center gap-4 sm:text-sm text-slate-600">
                         <span className="flex items-center gap-1">
                           <BedDouble size={14} /> {listing.bedrooms || 2} bed
                         </span>
@@ -941,7 +938,7 @@ export default function Listings() {
                   </Link>
                 );
               })}
-            </motion.div>
+            </div>
           )
         }
       </div >

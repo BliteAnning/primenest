@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   BellRing,
@@ -38,7 +38,10 @@ const emptyProfile = {
 
 const TenantDashboard = () => {
   const navigate = useNavigate();
-  const [activeView, setActiveView] = useState("overview");
+  const [activeView, setActiveView] = useState(
+    () => localStorage.getItem("tenantDashboardActiveView") || "overview"
+  );
+  const mainRef = useRef(null);
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(emptyProfile);
   const [savedListings, setSavedListings] = useState([]);
@@ -98,6 +101,18 @@ const TenantDashboard = () => {
     savedListings: savedListings.length,
     savedSearches: savedSearches.length,
   }), [savedListings.length, savedSearches.length]);
+
+  useEffect(() => {
+    localStorage.setItem("tenantDashboardActiveView", activeView);
+  }, [activeView]);
+
+  const handleTabSelect = (id) => {
+    setActiveView(id);
+    // sidebar sits above the content on small screens, so bring the content into view
+    if (window.innerWidth < 1024) {
+      mainRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
 
   const handleProfileChange = (event) => {
     const { name, value } = event.target;
@@ -210,7 +225,7 @@ const TenantDashboard = () => {
                   <button
                     key={item.id}
                     type="button"
-                    onClick={() => setActiveView(item.id)}
+                    onClick={() => handleTabSelect(item.id)}
                     className={`flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-left text-sm font-medium transition ${
                       activeView === item.id ? "bg-lime-600 text-white" : "text-slate-600 hover:bg-slate-50"
                     }`}
@@ -228,7 +243,7 @@ const TenantDashboard = () => {
             </button>
           </aside>
 
-          <main className="space-y-6">
+          <main ref={mainRef} className="space-y-6 scroll-mt-6">
             <section className="grid gap-4 md:grid-cols-2">
               <div className="rounded-[2rem] border border-slate-200 bg-white p-5 shadow-sm">
                 <p className="text-sm text-lime-600">Saved listings</p>

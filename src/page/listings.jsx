@@ -895,7 +895,7 @@ export default function Listings() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
               viewport={{ once: false, amount: 0.2 }}
-              className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+              className="grid gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
               {listings.map((listing) => {
                 const image =
                   listing.media?.find((item) => item.type === "photo" && item.url)?.url ||
@@ -908,7 +908,7 @@ export default function Listings() {
                     to={`/listings/${listing._id || listing.slug}`}
                     className="group overflow-hidden rounded-4xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#438608]/20 hover:shadow-xl"
                   >
-                    <div className="relative h-56 overflow-hidden">
+                    <div className="relative h-48 sm:h-56 overflow-hidden">
                       <img src={image} alt={listing.title} className="h-full w-full object-cover transition duration-700 ease-out group-hover:scale-110" />
                       <div className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-sm font-semibold text-[#438608] transition-transform duration-300 group-hover:scale-105">
                         {listing.listingType === "sale" ? "For Sale" : "For Rent"}
@@ -918,18 +918,18 @@ export default function Listings() {
                     <div className="space-y-3 p-5">
                       <div className="flex items-start justify-between gap-3">
                         <div>
-                          <h2 className="text-xl font-semibold text-slate-900">{listing.title}</h2>
-                          <p className="mt-1 flex items-center gap-1 text-sm text-slate-500">
+                          <h2 className="md:text-xl text-lg font-semibold text-slate-900">{listing.title}</h2>
+                          <p className="mt-1 flex items-center gap-1 text-xs sm:text-sm text-slate-500">
                             <MapPin size={14} />
                             {listing.location?.neighborhood || listing.location?.city || "Prime location"}
                           </p>
                         </div>
-                        <div className="text-right text-lg font-bold text-[#438608] transition-transform duration-300 group-hover:-translate-y-0.5">{formatCurrency(listing.price)}</div>
+                        <div className="text-right sm:text-lg text-sm font-bold text-[#438608] transition-transform duration-300 group-hover:-translate-y-0.5">{formatCurrency(listing.price)}</div>
                       </div>
 
-                      <p className="text-sm leading-6 text-slate-600 line-clamp-3">{listing.description}</p>
+                      <p className="sm:text-sm text-xs leading-6 text-slate-600 line-clamp-3">{listing.description}</p>
 
-                      <div className="flex items-center gap-4 text-sm text-slate-600">
+                      <div className="flex items-center gap-4 text-xs sm:text-sm text-slate-600">
                         <span className="flex items-center gap-1">
                           <BedDouble size={14} /> {listing.bedrooms || 2} bed
                         </span>

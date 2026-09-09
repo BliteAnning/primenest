@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -19,6 +19,7 @@ import {
   Search,
   SlidersHorizontal,
   Sparkles,
+  Volume2,
   WandSparkles,
 } from "lucide-react";
 import { listingContext } from "../context/listingContext";
@@ -108,6 +109,11 @@ export default function Listings() {
   const [analysisResult, setAnalysisResult] = useState(null);
   const [analysisLoading, setAnalysisLoading] = useState(false);
   const [analysisError, setAnalysisError] = useState("");
+  const [twiResult, setTwiResult] = useState(null);
+  const [twiSegmentIndex, setTwiSegmentIndex] = useState(0);
+  const [twiLoading, setTwiLoading] = useState(false);
+  const [twiError, setTwiError] = useState("");
+  const twiAudioRef = useRef(null);
 
   const featuredCount = useMemo(() => listings.filter((item) => item.isFeatured).length, [listings]);
   const preferredLocationCount = useMemo(() => splitCommaValues(analysisForm.preferredLocations).length, [analysisForm.preferredLocations]);
@@ -255,6 +261,8 @@ export default function Listings() {
     event.preventDefault();
     setAnalysisLoading(true);
     setAnalysisError("");
+    setTwiResult(null);
+    setTwiError("");
 
     const preferredLocations = splitCommaValues(analysisForm.preferredLocations);
     if (preferredLocations.length === 0) {
@@ -286,6 +294,60 @@ export default function Listings() {
     } finally {
       setAnalysisLoading(false);
     }
+  };
+
+  const handleListenInTwi = async () => {
+    if (!analysisResult?.recommendation) {
+      return;
+    }
+
+    setTwiLoading(true);
+    setTwiError("");
+
+    try {
+      const response = await axiosInstance.post("/affordability/speech", {
+        text: analysisResult.recommendation,
+      });
+
+      const { translatedText, segments } = response?.data?.data || {};
+      if (!segments || segments.length === 0) {
+        throw new Error("No audio returned");
+      }
+
+      setTwiResult({
+        translatedText,
+        segments: segments.map((segment) => ({
+          text: segment.text,
+          audioUrl: `data:${segment.mimeType || "audio/mpeg"};base64,${segment.audioBase64}`,
+        })),
+      });
+      setTwiSegmentIndex(0);
+    } catch (twiRequestError) {
+      console.error(twiRequestError);
+      setTwiResult(null);
+      setTwiError(
+        twiRequestError?.response?.data?.message || "We could not generate the Twi audio right now."
+      );
+    } finally {
+      setTwiLoading(false);
+    }
+  };
+
+  const currentTwiSegment = twiResult?.segments?.[twiSegmentIndex];
+
+  // Auto-advance and autoplay each chunk so long recommendations are read in full, back-to-back
+  useEffect(() => {
+    if (currentTwiSegment?.audioUrl && twiAudioRef.current) {
+      twiAudioRef.current.load();
+      twiAudioRef.current.play().catch(() => {});
+    }
+  }, [currentTwiSegment?.audioUrl]);
+
+  const handleTwiSegmentEnded = () => {
+    setTwiSegmentIndex((previousIndex) => {
+      const nextIndex = previousIndex + 1;
+      return nextIndex < (twiResult?.segments?.length || 0) ? nextIndex : previousIndex;
+    });
   };
 
   return (
@@ -619,6 +681,44 @@ export default function Listings() {
 
                         <div className="rounded-3xl border border-[#438608]/15 bg-[linear-gradient(180deg,rgba(67,134,8,0.03)_0%,rgba(67,134,25,0.08)_100%)] p-5 text-sm leading-7 text-slate-700">
                           {analysisResult.recommendation}
+                        </div>
+
+                        <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
+                          <div className="flex flex-wrap items-center justify-between gap-3">
+                            <div>
+                              <p className="text-sm font-semibold text-slate-700">🇬🇭 Twi audio version</p>
+                              <p className="text-xs text-slate-500">Translate this advice and listen to it in Twi.</p>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={handleListenInTwi}
+                              disabled={twiLoading}
+                              className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-70"
+                            >
+                              {twiLoading ? <LoaderCircle className="animate-spin" size={16} /> : <Volume2 size={16} />}
+                              Listen in Twi
+                            </button>
+                          </div>
+
+                          {twiError ? <p className="mt-3 text-sm text-rose-600">{twiError}</p> : null}
+
+                          {twiResult ? (
+                            <div className="mt-4 space-y-3">
+                              <p className="text-sm italic leading-6 text-slate-600">{twiResult.translatedText}</p>
+                              <audio
+                                ref={twiAudioRef}
+                                src={currentTwiSegment?.audioUrl}
+                                controls
+                                onEnded={handleTwiSegmentEnded}
+                                className="w-full"
+                              />
+                              {twiResult.segments.length > 1 ? (
+                                <p className="text-xs text-slate-400">
+                                  Playing part {twiSegmentIndex + 1} of {twiResult.segments.length} — continues automatically.
+                                </p>
+                              ) : null}
+                            </div>
+                          ) : null}
                         </div>
 
                         <div className="grid gap-3 sm:grid-cols-2">

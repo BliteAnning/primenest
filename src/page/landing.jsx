@@ -70,7 +70,7 @@ export default function Home() {
               <Link to="/register" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#438608] px-8 py-4 text-lg font-semibold text-white shadow-xl transition hover:bg-[#376f07]">
                 Start your journey <ArrowRight size={18} />
               </Link>
-              <Link to="/listings" className="inline-flex items-center justify-center rounded-full border border-[#7C5102] px-8 py-4 text-lg font-semibold text-[#7C5102] transition hover:bg-[#7C5102]/6">
+              <Link to="/listings" className="inline-flex items-center justify-center rounded-full border bg-white border-[#ffffff] px-8 py-4 text-lg font-semibold text-[#000000] transition hover:bg-[#88b146]">
                 Browse listings
               </Link>
             </div>

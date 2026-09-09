@@ -18,6 +18,7 @@ export default function Register() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -68,7 +69,7 @@ export default function Register() {
           </div>
         </div>
 
-        <div className="flex-1 p-8 sm:p-10 lg:p-12 bg-amber-50">
+        <div className="flex-1 p-8 sm:p-10 lg:p-12 bg-white">
           <div className="mb-8 text-center lg:text-left">
             <h3 className="text-3xl font-bold text-amber-900">Create account</h3>
             <p className="mt-2 text-amber-800">A few details and you’re ready to explore.</p>
@@ -88,7 +89,7 @@ export default function Register() {
 
               <label className="block text-sm font-medium text-amber-700">
                 Last name
-                <div className="mt-2 flex items-center gap-3 rounded-2xl border border-slate-200 px-4 py-3 focus-within:border-[#d6c091]">
+                <div className="mt-2 flex items-center gap-3 rounded-2xl border border-slate-200 px-4 py-3 focus-within:border-[#438608]">
                   <UserRound size={18} className="text-slate-400" />
                   <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} required className="w-full border-none bg-transparent outline-none" />
                 </div>
@@ -97,7 +98,7 @@ export default function Register() {
 
             <label className="block text-sm font-medium text-amber-700">
               Email address
-              <div className="mt-2 flex items-center gap-3 rounded-2xl border border-slate-200 px-4 py-3 focus-within:border-[#d6c091]">
+              <div className="mt-2 flex items-center gap-3 rounded-2xl border border-slate-200 px-4 py-3 focus-within:border-[#438608]">
                 <Mail size={18} className="text-slate-400" />
                 <input type="email" name="email" value={formData.email} onChange={handleChange} required className="w-full border-none bg-transparent outline-none" />
               </div>
@@ -105,7 +106,7 @@ export default function Register() {
 
             <label className="block text-sm font-medium text-amber-700">
               Phone number
-              <div className="mt-2 flex items-center gap-3 rounded-2xl border border-slate-200 px-4 py-3 focus-within:border-[#d6c091]">
+              <div className="mt-2 flex items-center gap-3 rounded-2xl border border-slate-200 px-4 py-3 focus-within:border-[#438608]">
                 <Phone size={18} className="text-slate-400" />
                 <input type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="+233 XX XXX XXXX" className="w-full border-none bg-transparent outline-none" />
               </div>
@@ -113,7 +114,7 @@ export default function Register() {
 
             <label className="block text-sm font-medium text-amber-700">
               I am a
-              <select name="role" value={formData.role} onChange={handleChange} className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-[#d6c091]">
+              <select name="role" value={formData.role} onChange={handleChange} className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-[#438608]">
                 <option value="tenant">Tenant / Buyer</option>
                 <option value="agent">Agent</option>
               </select>
@@ -121,9 +122,16 @@ export default function Register() {
 
             <label className="block text-sm font-medium text-amber-700">
               Password
-              <div className="mt-2 flex items-center gap-3 rounded-2xl border border-amber-200 px-4 py-3 focus-within:border-[#d6c091]">
+              <div className="mt-2 flex items-center gap-3 rounded-2xl border border-amber-200 px-4 py-3 focus-within:border-[#438608]">
                 <Lock size={18} className="text-amber-400" />
-                <input type="password" name="password" value={formData.password} onChange={handleChange} required className="w-full border-none bg-transparent outline-none" />
+                <input type={showPassword ? 'text' : 'password'} name="password" value={formData.password} onChange={handleChange} required className="w-full border-none bg-transparent outline-none" />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="text-amber-400"
+                >
+                  {showPassword ? 'Hide' : 'Show'}
+                </button>
               </div>
             </label>
 

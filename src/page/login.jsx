@@ -10,6 +10,7 @@ export default function Login() {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -79,7 +80,20 @@ export default function Login() {
               Password
               <div className="mt-2 flex items-center gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 focus-within:border-[#438608]">
                 <Lock size={18} className="text-amber-400" />
-                <input type="password" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} required className="w-full border-none bg-transparent outline-none" />
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  required
+                  className="w-full border-none bg-transparent outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="text-amber-400"
+                >
+                  {showPassword ? 'Hide' : 'Show'}
+                </button>
               </div>
             </label>
 

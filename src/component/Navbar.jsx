@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import green_logo from "../assets/green_logo.jpg";
 
 import { HouseIcon, Menu, X } from 'lucide-react';
 
@@ -50,7 +51,7 @@ const Navbar = () => {
           <div className="flex items-center gap-3">
             
             
-              <HouseIcon size={25} className="text-lime-700" />
+              <img src={green_logo} alt="PrimeNest Logo" className="h-10 w-10" />
               <span className=" text-lg font-semibold text-slate-900">PrimeNest</span>
             
           </div>
